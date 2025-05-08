@@ -1,0 +1,17 @@
+# Rust & Cargo
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# VSCode
+.vscode/
+
+# Python environments
+indexer_venv/
+
+# Mac system files
+.DS_Store
+
+# Misc
+*.log
+*.tmp
