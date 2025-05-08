@@ -8,7 +8,7 @@ use fred::prelude::*; // For Client, Config, Builder, Error, Expiration, SetOpti
 // Assuming these are still needed by your logic.
 // The 'unused' warning for Serialize/Deserialize here will appear if CodeEntity (defined elsewhere)
 // is the only serializable type and has its own `use serde::...` for the derive.
-use serde::{Serialize, Deserialize};
+
 use crate::ast_parser::CodeEntity;
 use std::collections::HashMap;
 use std::time::Duration;
