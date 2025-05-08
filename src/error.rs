@@ -9,7 +9,7 @@ pub enum AppError {
     #[error("yaml configuration error: {0}")]
     YamlConfig(#[from] serde_yaml::Error),
     #[error("redis error: {0}")]
-    Redis(#[from] fred::error::RedisError),
+    Redis(#[from] fred::error::Error),
     #[error("cli error: {0}")]
     Cli(String),
     #[error("other error: {0}")]
