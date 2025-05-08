@@ -1,7 +1,8 @@
 //! ast parsing for code_indexer_rust
 //! - parses python source files and extracts entities
 
-use rustpython_ast::{ast, parser};
+use rustpython_ast::*;
+use rustpython_parser::parse_program;
 use std::fs;
 use std::path::Path;
 
@@ -31,21 +32,23 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
         Ok(a) => a,
         Err(_) => return vec![],
     };
-    use rustpython_ast::ast::*;
-    use rustpython_ast::walk_ast;
+    use rustpython_ast::*;
+    
     fn get_line_range(node: &impl std::fmt::Debug) -> (usize, usize) {
         // fallback: line 1-1
         (1, 1)
     }
-    fn get_docstring(body: &[Box<Stmt>]) -> Option<String> {
-        if let Some(Stmt::Expr { value, .. }) = body.get(0).map(|b| &**b) {
-            if let Expr::Constant { value: Constant::Str(s), .. } = &**value {
-                return Some(s.clone());
+    fn get_docstring(body: &[Stmt]) -> Option<String> {
+        if let Some(Stmt::Expr(expr)) = body.get(0) {
+            if let Expr::Constant(constant) = &expr.0 {
+                if let rustpython_ast::Constant::Str { value, .. } = &constant.value {
+                    return Some(value.clone());
+                }
             }
         }
         None
     }
-    fn get_signature(name: &str, args: &Arguments) -> String {
+    fn get_signature(name: &str, args: &rustpython_ast::Arguments) -> String {
         let mut sig = format!("def {}(", name);
         let mut parts = Vec::new();
         for arg in &args.args {
@@ -56,16 +59,15 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
         sig
     }
     fn walk(node: &Stmt, rel_path: &str, entities: &mut Vec<CodeEntity>, parent_class: Option<&str>) {
-        use rustpython_ast::ast::*;
         match node {
-            Stmt::FunctionDef { name, args, body, .. } => {
+            Stmt::FunctionDef(def) => {
                 let (line_start, line_end) = (1, 1); // TODO: get real lines
-                let docstring = get_docstring(body);
+                let docstring = get_docstring(&def.body);
                 entities.push(CodeEntity {
                     entity_type: if parent_class.is_some() { "method" } else { "function" }.to_string(),
                     file_path: rel_path.to_string(),
-                    name: name.clone(),
-                    signature: Some(get_signature(name, args)),
+                    name: def.name.clone(),
+                    signature: Some(get_signature(&def.name, &def.args)),
                     docstring,
                     line_start,
                     line_end,
@@ -74,14 +76,14 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
                     value_repr: None,
                 });
             }
-            Stmt::ClassDef { name, bases, body, .. } => {
+            Stmt::ClassDef(def) => {
                 let (line_start, line_end) = (1, 1); // TODO: get real lines
-                let docstring = get_docstring(body);
-                let base_names = bases.iter().map(|b| format!("{:?}", b)).collect();
+                let docstring = get_docstring(&def.body);
+                let base_names = def.bases.iter().map(|b| format!("{:?}", b)).collect();
                 entities.push(CodeEntity {
                     entity_type: "class".to_string(),
                     file_path: rel_path.to_string(),
-                    name: name.clone(),
+                    name: def.name.clone(),
                     signature: None,
                     docstring,
                     line_start,
@@ -90,25 +92,25 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
                     bases: Some(base_names),
                     value_repr: None,
                 });
-                for stmt in body {
-                    walk(stmt, rel_path, entities, Some(name));
+                for stmt in &def.body {
+                    walk(stmt, rel_path, entities, Some(&def.name));
                 }
             }
-            Stmt::Assign { targets, value, .. } => {
+            Stmt::Assign(assign) => {
                 // Only top-level or class-level
-                for target in targets {
-                    if let Expr::Name { id, .. } = &**target {
+                for target in &assign.targets {
+                    if let Expr::Name(name) = &target {
                         entities.push(CodeEntity {
                             entity_type: "variable".to_string(),
                             file_path: rel_path.to_string(),
-                            name: id.clone(),
+                            name: name.id.clone(),
                             signature: None,
                             docstring: None,
                             line_start: 1,
                             line_end: 1,
                             parent_class: parent_class.map(|s| s.to_string()),
                             bases: None,
-                            value_repr: Some(format!("{:?}", value)),
+                            value_repr: Some(format!("{:?}", assign.value)),
                         });
                     }
                 }
@@ -116,8 +118,8 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
             _ => {}
         }
         // Recurse into children
-        if let Stmt::ClassDef { body, .. } = node {
-            for stmt in body {
+        if let Stmt::ClassDef(def) = node {
+            for stmt in &def.body {
                 walk(stmt, rel_path, entities, parent_class);
             }
         }

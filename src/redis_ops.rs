@@ -4,6 +4,7 @@
 //!   Config::from_url, Builder::from_config, client.init().await?
 
 use fred::prelude::*;
+use fred::clients::RedisClient;
 use serde::{Serialize, Deserialize};
 use crate::ast_parser::CodeEntity;
 use std::collections::HashMap;
