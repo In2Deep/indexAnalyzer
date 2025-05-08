@@ -85,11 +85,10 @@ pub async fn store_code_entities(
                     ));
                 }
             };
-            pipe.hset(&type_key, entity_id, &value_str);
-            pipe.sadd(format!("{}:search_index:{}:{}", key_prefix, entity_type, entity.name), entity_id);
-            pipe.sadd(format!("{}:file_entities:{}", key_prefix, entity.file_path), format!("{}:{}", entity_type, entity_id));
+            let _: () = pipe.hset(&type_key, (entity_id, &value_str)).await?;
+            let _: () = pipe.sadd(format!("{}:search_index:{}:{}", key_prefix, entity_type, entity.name), entity_id).await?;
+            let _: () = pipe.sadd(format!("{}:file_entities:{}", key_prefix, entity.file_path), format!("{}:{}", entity_type, entity_id)).await?;
         }
-       
         pipe.all().await?;
     }
     Ok(())
@@ -109,20 +108,20 @@ pub async fn clear_file_data(
             let entity_type = parts.next().unwrap_or("");
             let id_part = parts.next().unwrap_or("");
             let type_key = format!("{}:{}s", key_prefix, entity_type);
-            pipe.hdel(&type_key, id_part); 
+            let _: () = pipe.hdel(&type_key, id_part).await?;
             let name = id_part.split(':').last().unwrap_or("");
-            pipe.srem(
+            let _: () = pipe.srem(
                 format!("{}:search_index:{}:{}", key_prefix, entity_type, name),
                 id_part,
-            );
+            ).await?;
         }
         pipe.del(&entities_key); // del likely takes one key or multiple keys
         pipe.del(format!("{}:files:{}", key_prefix, rel_path));
         pipe.srem(format!("{}:file_index", key_prefix), rel_path);
 
         // Correct pipeline execution
-        let _: fred::types::RedisValue = pipe.all().await?; // Similar to above
-    }
+        pipe.all().await?;
+    
     Ok(())
 }
 
