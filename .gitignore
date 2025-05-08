@@ -8,6 +8,7 @@ Cargo.lock
 
 # Python environments
 indexer_venv/
+test_indexer/
 
 # Mac system files
 .DS_Store
