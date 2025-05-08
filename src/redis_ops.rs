@@ -84,18 +84,15 @@ pub async fn store_code_entities(
                         format!("Failed to serialize entity {}: {}", entity_id, e),
                     ));
                 }
-                format!("{}:{}", file_path, name)
             };
-
-            
-            let value_str = to_string(entity).unwrap(); 
-            pipe.hset(&type_key, (&entity_id, value_str)); 
+            pipe.hset(&type_key, (entity_id, &value_str)).await?;
 
             pipe.sadd(
-                format!("{}:search_index:{}:{}", key_prefix, entity_type, name),
+                format!("{}:search_index:{}:{}", key_prefix, entity_type, entity.name),
                 &entity_id,
             );
             pipe.sadd(
+                format!("{}:file_entities:{}", key_prefix, entity.file_path),
                 format!("{}:file_entities:{}", key_prefix, file_path),
                 format!("{}:{}", entity_type, &entity_id),
             );
