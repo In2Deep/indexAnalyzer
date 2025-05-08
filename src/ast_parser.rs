@@ -6,7 +6,7 @@ use rustpython_parser::parse_program;
 use std::fs;
 use std::path::Path;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CodeEntity {
     pub entity_type: String,
     pub file_path: String,

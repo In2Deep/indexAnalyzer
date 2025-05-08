@@ -75,16 +75,15 @@ pub async fn store_code_entities(
         let type_key = format!("{}:{}s", key_prefix, entity_type);
         let mut pipe = redis.pipeline();
         for entity in ents {
-            let file_path = &entity.file_path;
-            let name = &entity.name;
-            let entity_id = if entity_type == &"method" {
-                format!(
-                    "{}:{}.{}",
-                    file_path,
-                    entity.parent_class.as_deref().unwrap_or("unknown"),
-                    name
-                )
-            } else {
+            let entity_id = &entity.name;
+            let value_str = match to_string(entity) {
+                Ok(val) => val,
+                Err(e) => {
+                    return Err(Error::new(
+                        ErrorKind::Parse,
+                        format!("Failed to serialize entity {}: {}", entity_id, e),
+                    ));
+                }
                 format!("{}:{}", file_path, name)
             };
 
