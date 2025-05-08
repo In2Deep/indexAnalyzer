@@ -95,10 +95,10 @@ pub async fn store_code_entities(
 }
 
 pub async fn clear_file_data(
-    redis: &Client, // Changed from &RedisClient
+    redis: &Client,
     key_prefix: &str,
     rel_paths: &[String],
-) -> Result<(), Error> { // Changed from fred::error::Error
+) -> Result<(), Error> {
     for rel_path in rel_paths {
         let entities_key = format!("{}:file_entities:{}", key_prefix, rel_path);
         let entity_ids: Vec<String> = redis.smembers(&entities_key).await.unwrap_or_default();
@@ -110,21 +110,27 @@ pub async fn clear_file_data(
             let type_key = format!("{}:{}s", key_prefix, entity_type);
             let _: () = pipe.hdel(&type_key, id_part).await?;
             let name = id_part.split(':').last().unwrap_or("");
-            let _: () = pipe.srem(
-                format!("{}:search_index:{}:{}", key_prefix, entity_type, name),
-                id_part,
-            ).await?;
+            let _: () = pipe
+                .srem(
+                    format!("{}:search_index:{}:{}", key_prefix, entity_type, name),
+                    id_part,
+                )
+                .await?;
         }
-        pipe.del(&entities_key); // del likely takes one key or multiple keys
-        pipe.del(format!("{}:files:{}", key_prefix, rel_path));
-        pipe.srem(format!("{}:file_index", key_prefix), rel_path);
 
-        // Correct pipeline execution
+        let _: () = pipe.del(&entities_key).await?;
+        let _: () = pipe.del(format!("{}:files:{}", key_prefix, rel_path)).await?;
+        let _: () = pipe.srem(format!("{}:file_index", key_prefix), rel_path).await?;
+
+        // execute the pipeline for this rel_path
         pipe.all().await?;
-    
-    Ok(())
-}
+    }  // ← closes the for-loop
 
+    Ok(())  // ← now return success after all paths processed
+}  // ← closes clear_file_data
+
+
+// Now starts the next function:
 pub async fn query_code_entity(
     redis: &Client, // Changed from &RedisClient
     key_prefix: &str,
@@ -142,18 +148,17 @@ pub async fn query_code_entity(
         if !entity_ids.is_empty() { // Good optimization
             let mut pipe = redis.pipeline();
             for entity_id in &entity_ids {
-                pipe.hget(&type_key, entity_id); // hget (key, field) seems fine
+                let _: () = pipe.hget(&type_key, entity_id).await?;
             }
             
-            let hget_results: Vec<Result<Option<String>, Error>> = pipe.try_all().await?;
-
-            for result_opt_string in hget_results {
-                if let Ok(Some(json_str)) = result_opt_string { // Successfully got Some(json_str)
+            let hget_results: Vec<Result<Option<String>, Error>> = pipe.try_all().await;
+            for hget_result in hget_results {
+                let json_opt = hget_result?;
+                if let Some(json_str) = json_opt {
                     if let Ok(entity) = from_str(&json_str) {
                         results.push(entity);
                     }
                 }
-                
             }
         }
     } else {

@@ -28,36 +28,50 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
     let source_lines: Vec<&str> = content.lines().collect();
     let rel_path = file_path.strip_prefix(base_dir).unwrap_or(file_path).to_string_lossy().to_string();
     let mut entities = Vec::new();
-    let ast = match parser::parse_program(&content, "<embedded>") {
+    let ast = match parse_program(&content, "<embedded>") {
         Ok(a) => a,
         Err(_) => return vec![],
     };
-    use rustpython_ast::*;
-    
+
     fn get_line_range(node: &impl std::fmt::Debug) -> (usize, usize) {
         // fallback: line 1-1
         (1, 1)
     }
+
     fn get_docstring(body: &[Stmt]) -> Option<String> {
         if let Some(Stmt::Expr(expr)) = body.get(0) {
-            if let Expr::Constant(constant) = &expr.0 {
-                if let rustpython_ast::Constant::Str { value, .. } = &constant.value {
-                    return Some(value.clone());
+            if let Expr::Constant(boxed_const) = &*expr.value {
+                if let Constant::Str(val) = &boxed_const.value {
+                    return Some(val.clone());
                 }
             }
         }
         None
     }
-    fn get_signature(name: &str, args: &rustpython_ast::Arguments) -> String {
+
+    fn get_signature(name: &str, args: &Arguments) -> String {
         let mut sig = format!("def {}(", name);
         let mut parts = Vec::new();
+        for arg in &args.posonlyargs {
+            parts.push(arg.def.arg.to_string());
+        }
         for arg in &args.args {
-            parts.push(arg.arg.clone());
+            parts.push(arg.def.arg.to_string());
+        }
+        for arg in &args.kwonlyargs {
+            parts.push(arg.def.arg.to_string());
+        }
+        if let Some(arg) = &args.vararg {
+            parts.push(format!("*{}", arg.arg.to_string()));
+        }
+        if let Some(arg) = &args.kwarg {
+            parts.push(format!("**{}", arg.arg.to_string()));
         }
         sig.push_str(&parts.join(", "));
         sig.push(')');
         sig
     }
+
     fn walk(node: &Stmt, rel_path: &str, entities: &mut Vec<CodeEntity>, parent_class: Option<&str>) {
         match node {
             Stmt::FunctionDef(def) => {
@@ -66,7 +80,7 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
                 entities.push(CodeEntity {
                     entity_type: if parent_class.is_some() { "method" } else { "function" }.to_string(),
                     file_path: rel_path.to_string(),
-                    name: def.name.clone(),
+                    name: def.name.to_string(),
                     signature: Some(get_signature(&def.name, &def.args)),
                     docstring,
                     line_start,
@@ -83,7 +97,7 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
                 entities.push(CodeEntity {
                     entity_type: "class".to_string(),
                     file_path: rel_path.to_string(),
-                    name: def.name.clone(),
+                    name: def.name.to_string(),
                     signature: None,
                     docstring,
                     line_start,
@@ -99,11 +113,11 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
             Stmt::Assign(assign) => {
                 // Only top-level or class-level
                 for target in &assign.targets {
-                    if let Expr::Name(name) = &target {
+                    if let Expr::Name(boxed_id) = &*target {
                         entities.push(CodeEntity {
                             entity_type: "variable".to_string(),
                             file_path: rel_path.to_string(),
-                            name: name.id.clone(),
+                            name: boxed_id.id.to_string(),
                             signature: None,
                             docstring: None,
                             line_start: 1,
