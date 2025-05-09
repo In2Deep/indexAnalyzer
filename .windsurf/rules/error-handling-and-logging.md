@@ -2,5 +2,4 @@
 trigger: always_on
 ---
 
-- error handling and logging must follow roadmap
-- no panics unwraps or silent failures except on startup
+All functions must handle errors gracefully and log them appropriately using the existing logging framework. No use of `unwrap()` or `expect()` outside of tests.

@@ -2,5 +2,4 @@
 trigger: always_on
 ---
 
-- all config must load from home-indexer-config-yaml
-- no env no environment variables no cli config
+All configuration must be loaded from `~/.indexer/config.yaml`. No use of `.env`, CLI flags, or alternative sources for config.

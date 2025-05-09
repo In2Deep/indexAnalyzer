@@ -1,5 +1,5 @@
 ---
-trigger: manual
+trigger: always_on
 ---
 
-- before handoff ensure code tests and docs are up to date and match roadmap
+Ensure a smooth handoff between models and users by maintaining clear documentation, passing tests, and a clean codebase.

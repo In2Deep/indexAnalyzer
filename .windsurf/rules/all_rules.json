@@ -1,0 +1,175 @@
+{
+  "rules": [
+    {
+      "id": "absolute-path-integrity",
+      "trigger": "always_on",
+      "body": [
+        "All Redis keys that include file paths must use POSIX-style relative paths, calculated from the root app directory passed to the CLI. No absolute paths or OS-specific slashes may be present in the key."
+      ]
+    },
+    {
+      "id": "allow-explicit-project-name",
+      "trigger": "always_on",
+      "body": [
+        "The CLI must support an optional `--name` (alias: `--project-name`) argument that overrides the default project name inferred from the final path segment. When provided, this name must be used as the Redis key prefix."
+      ]
+    },
+    {
+      "id": "async-modular-idiomatic-rust",
+      "trigger": "always_on",
+      "body": [
+        "All Rust code must be written in an asynchronous, modular, and idiomatic style, adhering to best practices and the project's coding standards."
+      ]
+    },
+    {
+      "id": "cli-behavior-locked",
+      "trigger": "always_on",
+      "body": [
+        "All changes to CLI argument parsing must follow an explicit update to the roadmap. If a CLI subcommand expects positional arguments, it must be documented as such in README and code."
+      ]
+    },
+    {
+      "id": "error-handling-and-logging",
+      "trigger": "always_on",
+      "body": [
+        "All functions must handle errors gracefully and log them appropriately using the existing logging framework. No use of `unwrap()` or `expect()` outside of tests."
+      ]
+    },
+    {
+      "id": "enforce-consistent-key-prefix",
+      "trigger": "always_on",
+      "body": [
+        "Use a consistent Redis key prefix for all data. Derive from --name or project directory. Prevents cross-project contamination."
+      ]
+    },
+    {
+      "id": "file-and-directory-hygiened",
+      "trigger": "always_on",
+      "body": [
+        "Maintain a clean and organized file and directory structure. Remove unused files and ensure that all directories serve a clear purpose."
+      ]
+    },
+    {
+      "id": "function-touch-tests",
+      "trigger": "always_on",
+      "body": [
+        "Any edit inside a function body, signature, docstring, or even reordering must trigger full test execution for that function’s module.",
+        "No commits allowed unless all related tests pass.",
+        "If no test exists, halt execution and generate a skeleton test case before continuing.",
+        "Models may not bypass this with justification or \"small change\" excuses. No free passes."
+      ]
+    },
+    {
+      "id": "generate-output-must-match-python",
+      "trigger": "always_on",
+      "body": [
+        "In generate mode, the CLI must emit MCP-compatible `set` and `sadd` commands that match the Python script output byte-for-byte, including spacing, capitalization, and key structure."
+      ]
+    },
+    {
+      "id": "git-useage",
+      "trigger": "manual",
+      "body": [
+        "Use `git add` and `git commit` before and after each code revision with appropriate commit messages to maintain a clear history of changes."
+      ]
+    },
+    {
+      "id": "handoff-procedure",
+      "trigger": "always_on",
+      "body": [
+        "Before handing off to another model or user, ensure all code is committed, tests pass, documentation is up to date, and no stubs or TODOs remain."
+      ]
+    },
+    {
+      "id": "isolate-project-state",
+      "trigger": "always_on",
+      "body": [
+        "Indexing a new project must not overwrite or pollute Redis keys from a previously indexed project. Each project must be isolated by its key_prefix."
+      ]
+    },
+    {
+      "id": "lock-file-scope",
+      "trigger": "always_on",
+      "body": [
+        "Only modify one file per session unless explicitly told otherwise. Finish what you start. Prevents sprawling breakage and diff chaos."
+      ]
+    },
+    {
+      "id": "logging-required-for-redis",
+      "trigger": "always_on",
+      "body": [
+        "All Redis operations must include appropriate log entries using the existing logging framework. No writes, deletes, or queries should happen silently."
+      ]
+    },
+    {
+      "id": "mandatory-testing",
+      "trigger": "always_on",
+      "body": [
+        "Every function must include a matching unit test in the same or associated module. No exceptions. Tests must cover success and failure paths."
+      ]
+    },
+    {
+      "id": "model-user-handoff",
+      "trigger": "always_on",
+      "body": [
+        "Ensure a smooth handoff between models and users by maintaining clear documentation, passing tests, and a clean codebase."
+      ]
+    },
+    {
+      "id": "no-creative-output",
+      "trigger": "always_on",
+      "body": [
+        "The model must not invent output formats, change Redis schema layouts, alter key naming conventions, or introduce improvements unless explicitly authorized."
+      ]
+    },
+    {
+      "id": "no-free-thinking",
+      "trigger": "always_on",
+      "body": [
+        "Models must not re-architect, reword, or improve code, roadmaps, or docs unless explicitly instructed. Execute, don't create."
+      ]
+    },
+    {
+      "id": "no-implicit-key-prefixes",
+      "trigger": "always_on",
+      "body": [
+        "All Redis keys must use a prefix of the format `code:{project_name}` where `{project_name}` is derived from the basename of the root directory passed via the CLI."
+      ]
+    },
+    {
+      "id": "no-silent-errors",
+      "trigger": "always_on",
+      "body": [
+        "Any function returning a Result must propagate the error unless explicitly handled. All parsing failures, Redis errors, and IO errors must result in logs and an error path return."
+      ]
+    },
+    {
+      "id": "no-stubs-no-todos-no-future-work",
+      "trigger": "always_on",
+      "body": [
+        "Code must never contain `TODO`, `unimplemented!()`, or placeholder logic. All functionality must be complete or excluded intentionally."
+      ]
+    },
+    {
+      "id": "output-verification",
+      "trigger": "always_on",
+      "body": [
+        "Always verify that the output matches the required format and specifications. Any deviation is considered a bug."
+      ]
+    },
+    {
+      "id": "require-test-after-each-edit",
+      "trigger": "always_on",
+      "body": [
+        "Every function or logic block added, changed, or removed must be immediately followed by a passing test. No batching."
+      ]
+    },
+    {
+      "id": "yaml-configuration-only",
+      "trigger": "always_on",
+      "body": [
+        "All configuration must be loaded from `~/.indexer/config.yaml`. No use of `.env`, CLI flags, or alternative sources for config."
+      ]
+    }
+  ]
+}

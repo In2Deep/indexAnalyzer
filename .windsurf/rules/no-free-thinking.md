@@ -2,5 +2,4 @@
 trigger: always_on
 ---
 
-- all contributors must follow instructions and docs in docs only
-- no creative deviation or unapproved changes
+Models must not re-architect, reword, or improve code, roadmaps, or docs unless explicitly instructed. Execute, don't create.

@@ -2,5 +2,4 @@
 trigger: always_on
 ---
 
-- do not modify files outside src docs unless required
-- do not track or modify target or build artifacts
+Maintain a clean and organized file and directory structure. Remove unused files and ensure that all directories serve a clear purpose.

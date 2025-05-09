@@ -2,5 +2,4 @@
 trigger: always_on
 ---
 
-- all code must include async unit and integration tests
-- code without tests is incomplete
+Every function must include a matching unit test in the same or associated module. No exceptions. Tests must cover success and failure paths.

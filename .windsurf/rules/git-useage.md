@@ -2,4 +2,4 @@
 trigger: manual
 ---
 
-Use git add, git commit before and after each code revision with the appropriate message on commit
+Use `git add` and `git commit` before and after each code revision with appropriate commit messages to maintain a clear history of changes.

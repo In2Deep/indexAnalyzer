@@ -2,5 +2,4 @@
 trigger: always_on
 ---
 
-- every feature in roadmap must be implemented and tested
-- no partials or placeholders allowed
+Code must never contain `TODO`, `unimplemented!()`, or placeholder logic. All functionality must be complete or excluded intentionally.

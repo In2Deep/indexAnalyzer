@@ -1,6 +1,5 @@
 ---
-trigger: manual
+trigger: always_on
 ---
 
-- all io and network ops must be async
-- code must match module structure in roadmap
+All Rust code must be written in an asynchronous, modular, and idiomatic style, adhering to best practices and the project's coding standards.
