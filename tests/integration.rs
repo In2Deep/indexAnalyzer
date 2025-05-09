@@ -11,8 +11,6 @@ async fn test_config_load_default() {
 use code_indexer_rust::redis_ops::{create_redis_client, store_file_content, store_code_entities, query_code_entity, clear_file_data};
 use fred::interfaces::SetsInterface;
 use code_indexer_rust::ast_parser::CodeEntity;
-use tempfile::tempdir;
-use std::path::PathBuf;
 
 #[tokio::test]
 async fn test_store_and_query_file_content() {

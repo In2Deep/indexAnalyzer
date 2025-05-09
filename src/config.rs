@@ -4,7 +4,6 @@
 use serde::Deserialize;
 use dirs_next::home_dir;
 use std::fs;
-use std::path::PathBuf;
 use thiserror::Error;
 
 #[derive(Debug, Deserialize, Clone)]

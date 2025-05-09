@@ -11,17 +11,14 @@ mod logging;
 
 use crate::config::AppConfig;
 use crate::cli::{CliArgs, Commands};
-use crate::error::AppError;
 use crate::logging::setup_logging;
 use code_indexer_rust::redis_ops::{create_redis_client, store_file_content, store_code_entities, clear_file_data, query_code_entity};
 use fred::interfaces::SetsInterface;
 use code_indexer_rust::file_processing::collect_python_files;
 use code_indexer_rust::ast_parser::extract_code_info;
 use clap::Parser;
-use log::{error, info};
+use log::info;
 use std::path::PathBuf;
-use std::process;
-use tokio;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -35,7 +32,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = CliArgs::parse();
 
     // Connect to Redis
-    let redis = create_redis_client(&config.redis_url.as_ref().unwrap()).await?;
+    let redis = create_redis_client(config.redis_url.as_ref().unwrap()).await?;
 
     match args.command {
         Commands::Remember { path } => {

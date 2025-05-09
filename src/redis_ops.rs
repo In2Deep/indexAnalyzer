@@ -12,7 +12,6 @@ use fred::prelude::*; // For Client, Config, Builder, Error, Expiration, SetOpti
 use crate::ast_parser::CodeEntity;
 use std::collections::HashMap;
 use std::time::Duration;
-use serde::{Serialize, Deserialize};
 
 // This function was already mostly correct in your provided snippet based on previous iterations.
 pub async fn create_redis_client(redis_url: &str) -> Result<Client, Error> {
@@ -73,7 +72,7 @@ pub async fn store_code_entities(
 
     for (entity_type, ents) in by_type.iter() {
         let type_key = format!("{}:{}s", key_prefix, entity_type);
-        let mut pipe = redis.pipeline();
+        let pipe = redis.pipeline();
         for entity in ents {
             let entity_id = &entity.name;
             let value_str = match to_string(entity) {
@@ -102,7 +101,7 @@ pub async fn clear_file_data(
     for rel_path in rel_paths {
         let entities_key = format!("{}:file_entities:{}", key_prefix, rel_path);
         let entity_ids: Vec<String> = redis.smembers(&entities_key).await.unwrap_or_default();
-        let mut pipe = redis.pipeline();
+        let pipe = redis.pipeline();
         for entity_id in entity_ids.iter() {
             let mut parts = entity_id.splitn(2, ':');
             let entity_type = parts.next().unwrap_or("");
@@ -146,7 +145,7 @@ pub async fn query_code_entity(
         let type_key = format!("{}:{}s", key_prefix, entity_type);
 
         if !entity_ids.is_empty() { // Good optimization
-            let mut pipe = redis.pipeline();
+            let pipe = redis.pipeline();
             for entity_id in &entity_ids {
                 let _: () = pipe.hget(&type_key, entity_id).await?;
             }

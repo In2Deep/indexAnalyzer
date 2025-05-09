@@ -39,7 +39,7 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
     }
 
     fn get_docstring(body: &[Stmt]) -> Option<String> {
-        if let Some(Stmt::Expr(expr)) = body.get(0) {
+        if let Some(Stmt::Expr(expr)) = body.first() {
             if let Expr::Constant(boxed_const) = &*expr.value {
                 if let Constant::Str(val) = &boxed_const.value {
                     return Some(val.clone());
@@ -62,10 +62,10 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
             parts.push(arg.def.arg.to_string());
         }
         if let Some(arg) = &args.vararg {
-            parts.push(format!("*{}", arg.arg.to_string()));
+            parts.push(format!("*{}", arg.arg));
         }
         if let Some(arg) = &args.kwarg {
-            parts.push(format!("**{}", arg.arg.to_string()));
+            parts.push(format!("**{}", arg.arg));
         }
         sig.push_str(&parts.join(", "));
         sig.push(')');
@@ -113,7 +113,7 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
             Stmt::Assign(assign) => {
                 // Only top-level or class-level
                 for target in &assign.targets {
-                    if let Expr::Name(boxed_id) = &*target {
+                    if let Expr::Name(boxed_id) = target {
                         entities.push(CodeEntity {
                             entity_type: "variable".to_string(),
                             file_path: rel_path.to_string(),
