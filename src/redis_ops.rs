@@ -84,11 +84,11 @@ pub async fn store_code_entities(
                     ));
                 }
             };
-            let _: () = pipe.hset(&type_key, (entity_id, &value_str)).await?;
-            let _: () = pipe.sadd(format!("{}:search_index:{}:{}", key_prefix, entity_type, entity.name), entity_id).await?;
-            let _: () = pipe.sadd(format!("{}:file_entities:{}", key_prefix, entity.file_path), format!("{}:{}", entity_type, entity_id)).await?;
+            let _ = pipe.hset(&type_key, (entity_id, &value_str)).await?;
+            let _ = pipe.sadd(format!("{}:search_index:{}:{}", key_prefix, entity_type, entity.name), entity_id).await?;
+            let _ = pipe.sadd(format!("{}:file_entities:{}", key_prefix, entity.file_path), format!("{}:{}", entity_type, entity_id)).await?;
         }
-        pipe.all().await?;
+        let _: () = pipe.all().await?;
     }
     Ok(())
 }
@@ -107,9 +107,9 @@ pub async fn clear_file_data(
             let entity_type = parts.next().unwrap_or("");
             let id_part = parts.next().unwrap_or("");
             let type_key = format!("{}:{}s", key_prefix, entity_type);
-            let _: () = pipe.hdel(&type_key, id_part).await?;
+            let _ = pipe.hdel(&type_key, id_part).await?;
             let name = id_part.split(':').last().unwrap_or("");
-            let _: () = pipe
+            let _ = pipe
                 .srem(
                     format!("{}:search_index:{}:{}", key_prefix, entity_type, name),
                     id_part,
@@ -117,12 +117,12 @@ pub async fn clear_file_data(
                 .await?;
         }
 
-        let _: () = pipe.del(&entities_key).await?;
-        let _: () = pipe.del(format!("{}:files:{}", key_prefix, rel_path)).await?;
-        let _: () = pipe.srem(format!("{}:file_index", key_prefix), rel_path).await?;
+        let _ = pipe.del(&entities_key).await?;
+        let _ = pipe.del(format!("{}:files:{}", key_prefix, rel_path)).await?;
+        let _ = pipe.srem(format!("{}:file_index", key_prefix), rel_path).await?;
 
         // execute the pipeline for this rel_path
-        pipe.all().await?;
+        let _: () = pipe.all().await?;
     }  // ← closes the for-loop
 
     Ok(())  // ← now return success after all paths processed
