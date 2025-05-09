@@ -2,7 +2,8 @@
 //! - parses python source files and extracts entities
 
 use rustpython_ast::*;
-use rustpython_parser::parse_program;
+use rustpython_parser::ast::Suite;
+use rustpython_parser::Parse;
 use std::fs;
 use std::path::Path;
 
@@ -28,7 +29,7 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
     let source_lines: Vec<&str> = content.lines().collect();
     let rel_path = file_path.strip_prefix(base_dir).unwrap_or(file_path).to_string_lossy().to_string();
     let mut entities = Vec::new();
-    let ast = match parse_program(&content, "<embedded>") {
+    let ast = match Suite::parse(&content, "<embedded>") {
         Ok(a) => a,
         Err(_) => return vec![],
     };
