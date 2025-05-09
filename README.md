@@ -51,37 +51,45 @@ See `docs/configuration.md` for all options.
 
 ## Rust CLI Usage
 
+> **Note:** The Rust CLI uses positional arguments (not flags) for all commands. See below for usage details. For the Python CLI, see the next section.
+
 ### Install
 ```bash
 # In project root
 cargo build --release
-# Binary at target/release/code_indexer_rust
+# Binary will be at target/release/code_indexer_rust
 ```
 
-### Commands
-- `remember --path <project_dir>`: Index all Python files in a project
-- `refresh --project <project_dir> --files <file1.py,file2.py,...>`: Refresh memory for specific files
-- `recall --entity-type <function|class|...> [--name <name>] [--project <dir>]`: Query for code entities
-- `status [--project <dir>]`: Show indexed files and project info
-- `forget --project <dir>`: Remove all indexed data for a project
+### Command Overview
+- `remember <project_dir>`: Index all Python files in a project directory
+- `refresh <project_dir> <file1.py> [file2.py ...]`: Refresh memory for specific files in a project
+- `recall <entity_type> [name] [project_dir]`: Query for code entities (e.g., functions, classes)
+- `status <project_dir>`: Show indexed files and project info
+- `forget <project_dir>`: Remove all indexed data for a project
 
-### Examples
+### Usage Examples
 ```bash
-# Index a project
-./target/release/code_indexer_rust remember --path ./my_project
+# Index a project (add all Python files in the directory to Redis)
+./target/release/code_indexer_rust remember ~/shopify_builder/app
 
-# Refresh specific files
-./target/release/code_indexer_rust refresh --project ./my_project --files foo.py,bar.py
+# Refresh specific files (provide one or more .py files, space-separated)
+./target/release/code_indexer_rust refresh ~/shopify_builder/app foo.py bar.py
 
-# Recall all functions named 'foo'
-./target/release/code_indexer_rust recall --entity-type function --name foo --project ./my_project
+# Recall all functions named 'foo' in a project
+./target/release/code_indexer_rust recall function foo ~/shopify_builder/app
 
-# Show status
-./target/release/code_indexer_rust status --project ./my_project
+# Show status for a project
+./target/release/code_indexer_rust status ~/shopify_builder/app
 
-# Forget a project
-./target/release/code_indexer_rust forget --project ./my_project
+# Forget a project (remove all indexed data)
+./target/release/code_indexer_rust forget ~/shopify_builder/app
 ```
+
+---
+
+## Python CLI Usage
+
+> **Note:** The Python CLI uses flag-based arguments (e.g., `--path`, `--project`). The Rust CLI does not. See above for Rust usage.
 
 ---
 
