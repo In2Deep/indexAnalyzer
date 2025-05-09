@@ -1,7 +1,8 @@
 # Rust & Cargo
 /target/
 **/*.rs.bk
-Cargo.lock
+# (Commit Cargo.lock for reproducibility)
+#Cargo.lock
 
 # VSCode
 .vscode/
@@ -16,3 +17,17 @@ test_indexer/
 # Misc
 *.log
 *.tmp
+
+# ==== Python caches & coverage ====
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+coverage/
+htmlcov/
+
+# ==== Editor/IDE artifacts ====
+*~
+*.swp
+.idea/
+.mypy_cache/

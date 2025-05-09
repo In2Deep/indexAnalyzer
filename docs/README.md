@@ -24,7 +24,7 @@ IndexAnalyzer is a cross-language codebase indexer and query tool. It parses Pyt
 ---
 
 ## Architecture
-- **Rust CLI**: Async, modular, high performance. Uses `fred` for Redis, `rustpython_parser` for AST.
+- **Rust CLI**: Async, modular, high performance. Uses `fred 10.1.x` for Redis, `rustpython_parser` for AST.
 - **Python CLI**: Async, feature-complete, reference implementation.
 - **Redis**: Central store for code entities, file index, and project metadata.
 - **Config**: YAML only, loaded from `~/.indexer/config.yaml`.
@@ -78,7 +78,7 @@ See the main `README.md` for CLI argument details and examples.
 ---
 
 ## Troubleshooting
-- **Redis connection errors:** Ensure Redis is running and accessible at the configured URL.
+- **Redis connection errors:** Ensure Redis is running and accessible at the configured URL using `fred 10.1.0`.
 - **No entities found:** Check that the project path is correct and files are Python source files.
 - **Config not loading:** Ensure `~/.indexer/config.yaml` exists and is valid YAML.
 

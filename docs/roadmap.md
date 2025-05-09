@@ -42,7 +42,7 @@
 
   [dependencies]
   tokio = { version = "1.37", features = ["full"] }
-  fred = { version = "10.0.0", features = ["serde_json", "tokio-runtime"] }
+  fred = { version = "10.1.0", features = ["serde_json", "tokio-runtime"] }
   serde = { version = "1.0", features = ["derive"] }
   serde_json = "1.0"
   serde_yaml = "0.9"
@@ -59,7 +59,7 @@
   - All libraries are the latest stable and actively maintained as of May 2025.
   - `serde_yaml` is used for reading YAML config files.
   - `dirs-next` is used to expand `~` to the user's home directory reliably.
-  - `fred` 10.x is chosen for Redis due to improved performance and API stability.
+  - `fred` 10.1.0 is chosen for Redis due to improved performance and API stability.
   - No `.env` or dotenv crates—**all configuration is via YAML file, or Rust defaults if missing**.
 - **DO NOT** use any crate not listed above. **DO NOT** change features.
 
