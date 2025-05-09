@@ -83,11 +83,11 @@ pub async fn store_code_entities(
                     ));
                 }
             };
-            let _ = pipe.hset(&type_key, (entity_id, &value_str)).await?;
-            let _ = pipe.sadd(format!("{}:search_index:{}:{}", key_prefix, entity_type, entity.name), entity_id).await?;
-            let _ = pipe.sadd(format!("{}:file_entities:{}", key_prefix, entity.file_path), format!("{}:{}", entity_type, entity_id)).await?;
+            let _: u64 = pipe.hset(&type_key, (entity_id, &value_str)).await?;
+            let _: u64 = pipe.sadd(format!("{}:search_index:{}:{}", key_prefix, entity_type, entity.name), entity_id).await?;
+            let _: u64 = pipe.sadd(format!("{}:file_entities:{}", key_prefix, entity.file_path), format!("{}:{}", entity_type, entity_id)).await?;
         }
-        let _: () = pipe.all().await?;
+        let _: Vec<Value> = pipe.all().await?;
     }
     Ok(())
 }
@@ -121,7 +121,7 @@ pub async fn clear_file_data(
         let _ = pipe.srem(format!("{}:file_index", key_prefix), rel_path).await?;
 
         // execute the pipeline for this rel_path
-        let _: () = pipe.all().await?;
+        let _: Vec<Value> = pipe.all().await?;
     }  // ← closes the for-loop
 
     Ok(())  // ← now return success after all paths processed
