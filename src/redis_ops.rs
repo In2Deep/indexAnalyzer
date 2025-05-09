@@ -51,9 +51,8 @@ pub async fn store_file_content(
 
     // 2. Call redis.set with the correct 5 arguments for fred 10.1.0
     //    (key, value, expiration: Option<Expiration>, options: Option<SetOptions>, get: bool)
-    redis.set(file_key, value_to_set, None, None, false).await?;
-
-    redis.sadd(format!("{}:file_index", key_prefix), rel_path).await?;
+    let _: String = redis.set(file_key, value_to_set, None, None, false).await?;
+    let _: u64 = redis.sadd(format!("{}:file_index", key_prefix), rel_path).await?;
     Ok(())
 }
 
