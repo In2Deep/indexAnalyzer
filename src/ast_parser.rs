@@ -26,7 +26,7 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
         Ok(c) => c,
         Err(_) => return vec![],
     };
-    let source_lines: Vec<&str> = content.lines().collect();
+
     let rel_path = file_path.strip_prefix(base_dir).unwrap_or(file_path).to_string_lossy().to_string();
     let mut entities = Vec::new();
     let ast = match Suite::parse(&content, "<embedded>") {
@@ -34,10 +34,7 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
         Err(_) => return vec![],
     };
 
-    fn get_line_range(node: &impl std::fmt::Debug) -> (usize, usize) {
-        // fallback: line 1-1
-        (1, 1)
-    }
+
 
     fn get_docstring(body: &[Stmt]) -> Option<String> {
         if let Some(Stmt::Expr(expr)) = body.first() {
