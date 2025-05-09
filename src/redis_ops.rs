@@ -106,9 +106,9 @@ pub async fn clear_file_data(
             let entity_type = parts.next().unwrap_or("");
             let id_part = parts.next().unwrap_or("");
             let type_key = format!("{}:{}s", key_prefix, entity_type);
-            let _ = pipe.hdel(&type_key, id_part).await?;
+            let _: u64 = pipe.hdel(&type_key, id_part).await?;
             let name = id_part.split(':').last().unwrap_or("");
-            let _ = pipe
+            let _: u64 = pipe
                 .srem(
                     format!("{}:search_index:{}:{}", key_prefix, entity_type, name),
                     id_part,
@@ -116,9 +116,9 @@ pub async fn clear_file_data(
                 .await?;
         }
 
-        let _ = pipe.del(&entities_key).await?;
-        let _ = pipe.del(format!("{}:files:{}", key_prefix, rel_path)).await?;
-        let _ = pipe.srem(format!("{}:file_index", key_prefix), rel_path).await?;
+        let _: u64 = pipe.del(&entities_key).await?;
+        let _: u64 = pipe.del(format!("{}:files:{}", key_prefix, rel_path)).await?;
+        let _: u64 = pipe.srem(format!("{}:file_index", key_prefix), rel_path).await?;
 
         // execute the pipeline for this rel_path
         let _: Vec<Value> = pipe.all().await?;
