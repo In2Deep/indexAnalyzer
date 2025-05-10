@@ -30,8 +30,12 @@ pub enum Commands {
     },
     /// search for code in memory
     Recall {
-        entity_type: String,
-        name: Option<String>,
+        #[arg(long)]
+        entity: Option<String>,
+        #[arg(long = "show-lines")]
+        show_lines: bool,
+        #[arg(long)]
+        max: Option<usize>,
         #[arg(long = "name", alias = "project-name")]
         project_name: String,
     },
