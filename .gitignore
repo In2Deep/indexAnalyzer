@@ -31,3 +31,7 @@ htmlcov/
 *.swp
 .idea/
 .mypy_cache/
+.windsurf/logs/
+redis-dump.txt
+redis-keys.txt
+redis-types.txt
