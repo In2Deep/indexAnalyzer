@@ -1,4 +1,8 @@
-{
+---
+description: 
+---
+
+
   "title": "nuclear-test-discipline",
   "description": "Forces test validation for any code change within function scope. No change is too small to escape scrutiny.",
   "body": [
@@ -26,5 +30,4 @@
     "## 6. Documentation",
     "- Documentation is very, very poor and must be improved. Focus all docs on the Rust implementation; do not add or update any documentation for the Python code.",
     "- After every successful test or bug fix, update or create the corresponding documentation entry for the affected module/function."
-  ]
-}
+ 
