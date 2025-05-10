@@ -1,5 +1,5 @@
 ---
-description Workflow for Project Documentation and Commit Hygiene
+description: Documentation Workflow
 ---
 
 Documentation Workflow

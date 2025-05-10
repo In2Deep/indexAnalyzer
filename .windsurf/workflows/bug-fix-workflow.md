@@ -1,8 +1,8 @@
 ---
-description Bug Fix Workflow
+description: Bug Fixing
 ---
 
-Bug Fixing
+
 
 1 clean slate  
 - run git status and confirm no uncommitted changes  
