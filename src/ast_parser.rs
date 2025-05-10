@@ -69,10 +69,17 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
         sig
     }
 
-    fn walk(node: &Stmt, rel_path: &str, entities: &mut Vec<CodeEntity>, parent_class: Option<&str>) {
+    fn textsize_to_line(src: &str, pos: rustpython_parser::ast::TextSize) -> usize {
+    // TextSize is a byte offset; count newlines up to that offset
+    let idx = pos.to_usize();
+    src[..idx].lines().count() + 1 // 1-based line number
+}
+
+fn walk(node: &Stmt, rel_path: &str, entities: &mut Vec<CodeEntity>, parent_class: Option<&str>, src: &str) {
         match node {
             Stmt::FunctionDef(def) => {
-                let (line_start, line_end) = (1, 1); // TODO: get real lines
+                let line_start = textsize_to_line(src, def.range.start());
+                let line_end = textsize_to_line(src, def.range.end());
                 let docstring = get_docstring(&def.body);
                 entities.push(CodeEntity {
                     entity_type: if parent_class.is_some() { "method" } else { "function" }.to_string(),
@@ -88,7 +95,8 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
                 });
             }
             Stmt::ClassDef(def) => {
-                let (line_start, line_end) = (1, 1); // TODO: get real lines
+                let line_start = textsize_to_line(src, def.range.start());
+                let line_end = textsize_to_line(src, def.range.end());
                 let docstring = get_docstring(&def.body);
                 let base_names = def.bases.iter().map(|b| format!("{:?}", b)).collect();
                 entities.push(CodeEntity {
@@ -104,7 +112,7 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
                     value_repr: None,
                 });
                 for stmt in &def.body {
-                    walk(stmt, rel_path, entities, Some(&def.name));
+                    walk(stmt, rel_path, entities, Some(&def.name), src);
                 }
             }
             Stmt::Assign(assign) => {
@@ -131,12 +139,32 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
         // Recurse into children
         if let Stmt::ClassDef(def) = node {
             for stmt in &def.body {
-                walk(stmt, rel_path, entities, parent_class);
+                walk(stmt, rel_path, entities, parent_class, src);
             }
         }
     }
     for stmt in &ast {
-        walk(stmt, &rel_path, &mut entities, None);
+        walk(stmt, &rel_path, &mut entities, None, &content);
     }
     entities
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::File;
+    use std::io::Write;
+    use tempfile::tempdir;
+    #[test]
+    fn test_extract_code_info_lines() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("foo.py");
+        let code = "class Bar:\n    def foo(self):\n        pass\n";
+        let mut file = File::create(&file_path).unwrap();
+        write!(file, "{}", code).unwrap();
+        let entities = extract_code_info(&file_path, dir.path());
+        assert!(entities.iter().any(|e| e.name == "Bar" && e.line_start > 0));
+        assert!(entities.iter().any(|e| e.name == "foo" && e.line_start > 0));
+    }
+}
+

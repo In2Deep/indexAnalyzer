@@ -7,7 +7,8 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 
 ## Open Tasks
 
-(none)
+- [ ] Fix line number extraction in src/ast_parser.rs to use real AST node locations for all entities (function, class, assignment). Add tests and follow all workflows.
+
 
 ## Completed Tasks
 
