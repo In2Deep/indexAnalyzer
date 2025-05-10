@@ -19,12 +19,12 @@ This document expands on the main project `README.md` and provides in-depth deta
 ---
 
 ## Overview
-indexer is a cross-language codebase indexer and query tool. It parses Python source code, extracts code entities, and stores metadata in Redis for fast recall and search. It is implemented in both Rust (async, high-performance) and Python (reference/compatibility).
+indexer is a cross-language codebase indexer and query tool. It parses source code, extracts code entities, and stores metadata in Redis for fast recall and search. It is implemented in Rust (async, high-performance), which serves as the canonical implementation.
 
 ---
 
 ## Architecture
-- **Rust CLI**: Async, modular, high performance. Uses `fred 10.1.x` for Redis, `rustpython_parser` for AST.
+- **Rust CLI**: Async, modular, high performance. Uses `fred 10.1.x` for Redis.
 
 - **Redis**: Central store for code entities, file index, and project metadata.
 - **Config**: YAML only, loaded from `~/.indexer/config.yaml`.

@@ -89,24 +89,10 @@ cargo build --release
 - `status [--project <dir>]`: Show indexed files and project info
 - `forget --project <dir>`: Remove all indexed data for a project
 
-### Examples
-```bash
-# Index a project
-python indexer.py remember --path ./my_project
+### Vectorization (Upcoming Feature)
+Support for vectorizing code (generating embeddings for semantic search and LLM workflows) is planned. This will be available as a separate subcommand or flag (e.g., `vectorize` or `--vectorize`).
 
-# Refresh specific files
-python indexer.py refresh --project ./my_project --files foo.py,bar.py
-
-# Recall all functions named 'foo'
-python indexer.py recall --entity-type function --name foo --project ./my_project
-
-# Show status
-python indexer.py status --project ./my_project
-
-# Forget a project
-python indexer.py forget --project ./my_project
-```
-
+All usage and examples below refer to the Rust implementation only.
 ---
 
 ## Development
