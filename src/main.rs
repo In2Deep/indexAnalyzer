@@ -31,7 +31,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (key_prefix, cmd) = match args.command {
         Commands::Remember { ref name, .. } => (format!("code_index:{}", name), args.command),
         Commands::Refresh { ref name, .. } => (format!("code_index:{}", name), args.command),
-        Commands::Recall { project_name: ref project_name, .. } => (format!("code_index:{}", project_name), args.command),
+        Commands::Recall { ref project_name, .. } => (format!("code_index:{}", project_name), args.command),
         Commands::Status { ref name } => (format!("code_index:{}", name), args.command),
         Commands::Forget { ref name } => (format!("code_index:{}", name), args.command),
     };
@@ -73,7 +73,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             info!("Refreshed {} files", files.len());
         }
-        Commands::Recall { entity, show_lines, max, project_name: _ } => {
+        Commands::Recall { entity, show_lines, max: _max, project_name: _ } => {
             let entity_type = entity.as_deref().unwrap_or("");
             let results = query_code_entity(&redis, &key_prefix, entity_type, None).await?;
             if show_lines {

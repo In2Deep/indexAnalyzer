@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Rule: Zero Warnings Required
 
 - All code must compile and test with **zero warnings** and **zero errors**. Any warning is considered a defect and must be fixed immediately.
@@ -8,3 +12,4 @@
 - Handoff, merge, or release is not permitted unless all output is green and warning-free.
 
 **This rule is absolute. Deviation is never permitted.**
+`
