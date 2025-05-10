@@ -32,10 +32,6 @@
     "content": "---\ntrigger: always_on\n---\n\n- Any edit inside a function body, signature, docstring, or even reordering must **trigger full test execution** for that function’s module.\n- No commits allowed unless all related tests pass.\n- If no test exists, halt execution and generate a skeleton test case before continuing.\n- Models may not bypass this with justification or \"small change\" excuses. No free passes."
   },
   {
-    "filename": "generate-output-must-match-python.md",
-    "content": "---\ntrigger: always_on\n---\n\n- In generate mode, the CLI must emit MCP-compatible `set` and `sadd` commands that match the Python script output byte-for-byte, including spacing, capitalization, and key structure."
-  },
-  {
     "filename": "git-useage.md",
     "content": "---\ntrigger: manual\n---\n\n- Use `git add` and `git commit` before and after each code revision with appropriate commit messages to maintain a clear history of changes."
   },

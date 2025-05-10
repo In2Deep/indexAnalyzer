@@ -1,4 +1,4 @@
-//! logging setup for code_indexer_rust
+//! logging setup for indexer
 
 use crate::config::AppConfig;
 use fern::Dispatch;

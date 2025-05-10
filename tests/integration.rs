@@ -1,21 +1,21 @@
-//! async integration tests for code_indexer_rust
+//! async integration tests for indexer
 
 #[tokio::test]
 async fn test_config_load_default() {
-    use code_indexer_rust::config::AppConfig;
+    use indexer::config::AppConfig;
     let cfg = AppConfig::load().unwrap();
     assert!(cfg.redis_url.is_some());
     assert!(cfg.log_level.is_some());
 }
 
-use code_indexer_rust::redis_ops::{create_redis_client, store_file_content, store_code_entities, query_code_entity, clear_file_data};
+use indexer::redis_ops::{create_redis_client, store_file_content, store_code_entities, query_code_entity, clear_file_data};
 use fred::interfaces::SetsInterface;
-use code_indexer_rust::ast_parser::CodeEntity;
+use indexer::ast_parser::CodeEntity;
 
 #[tokio::test]
 async fn test_store_and_query_file_content() {
     let redis = create_redis_client("redis://localhost:6379/15").await.unwrap();
-    let key_prefix = "test";
+    let key_prefix = "code_index:test";
     let rel_path = "foo/bar.py";
     let content = "def foo(): pass";
     let size = content.len();
@@ -31,7 +31,7 @@ async fn test_store_and_query_file_content() {
 #[tokio::test]
 async fn test_store_and_query_entities() {
     let redis = create_redis_client("redis://localhost:6379/15").await.unwrap();
-    let key_prefix = "test";
+    let key_prefix = "code_index:test";
     let entity = CodeEntity {
         entity_type: "function".to_string(),
         file_path: "foo/bar.py".to_string(),

@@ -1,4 +1,4 @@
-//! ast parsing for code_indexer_rust
+//! ast parsing for indexer
 //! - parses python source files and extracts entities
 
 use rustpython_ast::*;
@@ -33,7 +33,6 @@ pub fn extract_code_info(file_path: &Path, base_dir: &Path) -> Vec<CodeEntity> {
         Ok(a) => a,
         Err(_) => return vec![],
     };
-
 
 
     fn get_docstring(body: &[Stmt]) -> Option<String> {

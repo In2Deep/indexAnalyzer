@@ -1,4 +1,4 @@
-//! configuration module for code_indexer_rust
+//! configuration module for indexer
 //! loads ~/.indexer/config.yaml using serde_yaml
 
 use serde::Deserialize;

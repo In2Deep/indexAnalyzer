@@ -1,4 +1,4 @@
-//! error module for code_indexer_rust
+//! error module for indexer
 
 use thiserror::Error;
 

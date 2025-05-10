@@ -60,13 +60,6 @@
       ]
     },
     {
-      "id": "generate-output-must-match-python",
-      "trigger": "always_on",
-      "body": [
-        "In generate mode, the CLI must emit MCP-compatible `set` and `sadd` commands that match the Python script output byte-for-byte, including spacing, capitalization, and key structure."
-      ]
-    },
-    {
       "id": "git-useage",
       "trigger": "manual",
       "body": [

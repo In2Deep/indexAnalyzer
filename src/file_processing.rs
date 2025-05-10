@@ -1,4 +1,4 @@
-//! file collection and filtering logic for code_indexer_rust
+//! file collection and filtering logic for indexer
 //! - traverses directories
 //! - respects ignore patterns
 

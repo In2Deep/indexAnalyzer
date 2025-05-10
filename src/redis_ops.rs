@@ -1,4 +1,4 @@
-//! async redis operations for code_indexer_rust
+//! async redis operations for indexer
 //! - stores and queries files and entities
 //! - uses fred 10.x async initialization:
 //!   Config::from_url, Builder::from_config, client.init().await?
@@ -83,9 +83,9 @@ pub async fn store_code_entities(
                     ));
                 }
             };
-            let _: u64 = pipe.hset(&type_key, (entity_id, &value_str)).await?;
-            let _: u64 = pipe.sadd(format!("{}:search_index:{}:{}", key_prefix, entity_type, entity.name), entity_id).await?;
-            let _: u64 = pipe.sadd(format!("{}:file_entities:{}", key_prefix, entity.file_path), format!("{}:{}", entity_type, entity_id)).await?;
+            let _: u64 = redis.hset(&type_key, (entity_id, &value_str)).await?;
+            let _: u64 = redis.sadd(format!("{}:search_index:{}:{}", key_prefix, entity_type, entity.name), entity_id).await?;
+            let _: u64 = redis.sadd(format!("{}:file_entities:{}", key_prefix, entity.file_path), format!("{}:{}", entity_type, entity_id)).await?;
         }
         let _: Vec<Value> = pipe.all().await?;
     }
@@ -106,19 +106,17 @@ pub async fn clear_file_data(
             let entity_type = parts.next().unwrap_or("");
             let id_part = parts.next().unwrap_or("");
             let type_key = format!("{}:{}s", key_prefix, entity_type);
-            let _: u64 = pipe.hdel(&type_key, id_part).await?;
+            let _: u64 = redis.hdel(&type_key, id_part).await?;
             let name = id_part.split(':').last().unwrap_or("");
-            let _: u64 = pipe
-                .srem(
-                    format!("{}:search_index:{}:{}", key_prefix, entity_type, name),
-                    id_part,
-                )
-                .await?;
+            let _: u64 = redis.srem(
+    format!("{}:search_index:{}:{}", key_prefix, entity_type, name),
+    id_part,
+).await?;
         }
 
-        let _: u64 = pipe.del(&entities_key).await?;
-        let _: u64 = pipe.del(format!("{}:files:{}", key_prefix, rel_path)).await?;
-        let _: u64 = pipe.srem(format!("{}:file_index", key_prefix), rel_path).await?;
+        let _: u64 = redis.del(&entities_key).await?;
+        let _: u64 = redis.del(format!("{}:files:{}", key_prefix, rel_path)).await?;
+        let _: u64 = redis.srem(format!("{}:file_index", key_prefix), rel_path).await?;
 
         // execute the pipeline for this rel_path
         let _: Vec<Value> = pipe.all().await?;
@@ -143,22 +141,15 @@ pub async fn query_code_entity(
         let entity_ids: Vec<String> = redis.smembers(&search_key).await.unwrap_or_default();
         let type_key = format!("{}:{}s", key_prefix, entity_type);
 
-        if !entity_ids.is_empty() { // Good optimization
-            let pipe = redis.pipeline();
-            for entity_id in &entity_ids {
-                let _: () = pipe.hget(&type_key, entity_id).await?;
-            }
-            
-            let hget_results: Vec<Result<Option<String>, Error>> = pipe.try_all().await;
-            for hget_result in hget_results {
-                let json_opt = hget_result?;
-                if let Some(json_str) = json_opt {
-                    if let Ok(entity) = from_str(&json_str) {
-                        results.push(entity);
-                    }
-                }
+        if !entity_ids.is_empty() {
+    for entity_id in &entity_ids {
+        if let Some(json_str) = redis.hget::<Option<String>, _, _>(&type_key, entity_id).await? {
+            if let Ok(entity) = from_str(&json_str) {
+                results.push(entity);
             }
         }
+    }
+}
     } else {
         let type_key = format!("{}:{}s", key_prefix, entity_type);
         let all_entities: HashMap<String, String> = redis.hgetall(&type_key).await.unwrap_or_default();

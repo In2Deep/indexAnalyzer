@@ -255,28 +255,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f46ad14479a25103f283c0f10005961cf086d8dc42205bb44c46ac563475dca6"
 
 [[package]]
-name = "code_indexer_rust"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "clap",
- "dirs-next",
- "fern",
- "fred",
- "ignore",
- "log",
- "once_cell",
- "rustpython-ast",
- "rustpython-parser",
- "serde",
- "serde_json",
- "serde_yaml",
- "tempfile",
- "thiserror",
- "tokio",
-]
-
-[[package]]
 name = "colorchoice"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -783,6 +761,28 @@ dependencies = [
  "same-file",
  "walkdir",
  "winapi-util",
+]
+
+[[package]]
+name = "indexer"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "clap",
+ "dirs-next",
+ "fern",
+ "fred",
+ "ignore",
+ "log",
+ "once_cell",
+ "rustpython-ast",
+ "rustpython-parser",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "tempfile",
+ "thiserror",
+ "tokio",
 ]
 
 [[package]]

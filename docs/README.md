@@ -1,4 +1,4 @@
-# IndexAnalyzer — Detailed Documentation
+# indexer — Detailed Documentation
 
 This document expands on the main project `README.md` and provides in-depth details for advanced users and developers.
 
@@ -10,7 +10,7 @@ This document expands on the main project `README.md` and provides in-depth deta
 - [Configuration](#configuration)
 - [Commands & Usage](#commands--usage)
 - [Rust CLI Details](#rust-cli-details)
-- [Python CLI Details](#python-cli-details)
+
 - [Redis Schema](#redis-schema)
 - [Troubleshooting](#troubleshooting)
 - [Development & Roadmap](#development--roadmap)
@@ -19,13 +19,13 @@ This document expands on the main project `README.md` and provides in-depth deta
 ---
 
 ## Overview
-IndexAnalyzer is a cross-language codebase indexer and query tool. It parses Python source code, extracts code entities, and stores metadata in Redis for fast recall and search. It is implemented in both Rust (async, high-performance) and Python (reference/compatibility).
+indexer is a cross-language codebase indexer and query tool. It parses Python source code, extracts code entities, and stores metadata in Redis for fast recall and search. It is implemented in both Rust (async, high-performance) and Python (reference/compatibility).
 
 ---
 
 ## Architecture
 - **Rust CLI**: Async, modular, high performance. Uses `fred 10.1.x` for Redis, `rustpython_parser` for AST.
-- **Python CLI**: Async, feature-complete, reference implementation.
+
 - **Redis**: Central store for code entities, file index, and project metadata.
 - **Config**: YAML only, loaded from `~/.indexer/config.yaml`.
 
@@ -41,31 +41,32 @@ log_level: "info"
 ---
 
 ## Commands & Usage
-All commands are available in both CLIs:
+All commands are available in the Rust CLI:
 - `remember`: Index all Python files in a project
 - `refresh`: Refresh memory for specific files
 - `recall`: Query for code entities (functions, classes, etc.)
 - `status`: Show indexed files and project info
 - `forget`: Remove all indexed data for a project
 
-See the main `README.md` for CLI argument details and examples.
+### Project Namespacing with --name
+- Use `--name <project>` (or `--project-name <project>`) to specify the project name for Redis key prefixing.
+- If not provided, the project name defaults to the last segment of the target directory.
+- All Redis keys are namespaced as `code_index:<project>:...` to ensure project isolation.
+
+**Example:**
+```bash
+./target/release/indexer remember --name myproject --path ~/myproject
+```
 
 ---
 
 ## Rust CLI Details
 - **Build:** `cargo build --release`
-- **Run:** `./target/release/code_indexer_rust <command> [options]`
+- **Run:** `./target/release/indexer <command> [options]`
 - **Dependencies:** See `../docs/dependency_setup.md`
 - **Testing:** `cargo test --all -- --nocapture`
 - **Error Handling:** All errors are logged; no panics except on startup.
 - **Async:** All operations are non-blocking and async.
-
----
-
-## Python CLI Details
-- **Run:** `python code_indexer.py <command> [options]`
-- **Dependencies:** See `requirements.txt`
-- **Async:** Uses `asyncio` for all I/O and Redis operations.
 
 ---
 

@@ -1,6 +1,6 @@
-# IndexAnalyzer
+# indexer
 
-A high-performance, async codebase indexer and query tool for Python projects, with both Rust and Python CLI implementations. Stores code structure and metadata in Redis for fast recall, search, and analysis.
+A high-performance, async codebase indexer and query tool for Python projects, implemented in Rust. Stores code structure and metadata in Redis for fast recall, search, and analysis.
 
 ---
 
@@ -12,10 +12,7 @@ A high-performance, async codebase indexer and query tool for Python projects, w
   - [Install](#install)
   - [Commands](#commands)
   - [Examples](#examples)
-- [Python CLI Usage](#python-cli-usage)
-  - [Install](#install-1)
-  - [Commands](#commands-1)
-  - [Examples](#examples-1)
+
 - [Development](#development)
 - [License](#license)
 
@@ -24,7 +21,7 @@ A high-performance, async codebase indexer and query tool for Python projects, w
 ## Features
 - Parses Python source code to extract functions, classes, and metadata
 - Stores code entities and file info in Redis for fast querying
-- Async, modular, and idiomatic code (Rust and Python)
+- Async, modular, and idiomatic Rust code
 - CLI for indexing, refreshing, recalling, status, and forgetting code
 - YAML-based configuration (no env vars or CLI config)
 
@@ -32,7 +29,7 @@ A high-performance, async codebase indexer and query tool for Python projects, w
 
 ## Requirements
 - **Redis** (>=6.0) running and accessible (default: `localhost:6379`)
-- Python >=3.8 (for Python CLI)
+
 - Rust (stable, see `docs/dependency_setup.md` for required toolchain)
 
 ---
@@ -51,55 +48,38 @@ See `docs/configuration.md` for all options.
 
 ## Rust CLI Usage
 
-> **Note:** The Rust CLI uses positional arguments (not flags) for all commands. See below for usage details. For the Python CLI, see the next section.
+> **Note:** The Rust CLI supports the global `--name` (or `--project-name`) argument to specify the project name for Redis key prefixing. If not provided, the project name defaults to the last segment of the target directory. All Redis keys are namespaced as `code_index:<project>:...` to ensure project isolation.
 
 ### Install
 ```bash
 # In project root
 cargo build --release
-# Binary will be at target/release/code_indexer_rust
+# Binary will be at target/release/indexer
 ```
 
 ### Command Overview
-- `remember <project_dir>`: Index all Python files in a project directory
-- `refresh <project_dir> <file1.py> [file2.py ...]`: Refresh memory for specific files in a project
-- `recall <entity_type> [name] [project_dir]`: Query for code entities (e.g., functions, classes)
-- `status <project_dir>`: Show indexed files and project info
-- `forget <project_dir>`: Remove all indexed data for a project
+- `remember --name <project> --path <project_dir>`: Index all Python files in a project directory
+- `refresh --name <project> --files <file1.py,file2.py,...>`: Refresh memory for specific files in a project
+- `recall <entity_type> [name] --name <project>`: Query for code entities (e.g., functions, classes)
+- `status --name <project>`: Show indexed files and project info
+- `forget --name <project>`: Remove all indexed data for a project
 
 ### Usage Examples
 ```bash
-# Index a project (add all Python files in the directory to Redis)
-./target/release/code_indexer_rust remember ~/shopify_builder/app
+# Index a project with a specific project name
+./target/release/indexer remember --name my_project --path ~/my_project
 
-# Refresh specific files (provide one or more .py files, space-separated)
-./target/release/code_indexer_rust refresh ~/shopify_builder/app foo.py bar.py
+# Refresh specific files by name
+./target/release/indexer refresh --name my_project --files foo.py,bar.py
 
 # Recall all functions named 'foo' in a project
-./target/release/code_indexer_rust recall function foo ~/shopify_builder/app
+./target/release/indexer recall function foo --name my_project
 
 # Show status for a project
-./target/release/code_indexer_rust status ~/shopify_builder/app
+./target/release/indexer status --name my_project
 
-# Forget a project (remove all indexed data)
-./target/release/code_indexer_rust forget ~/shopify_builder/app
-```
-
----
-
-## Python CLI Usage
-
-> **Note:** The Python CLI uses flag-based arguments (e.g., `--path`, `--project`). The Rust CLI does not. See above for Rust usage.
-
----
-
-## Python CLI Usage
-
-### Install
-```bash
-pip install -r requirements.txt
-# or
-python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
+# Forget (remove) all indexed data for a project
+./target/release/indexer forget --name my_project
 ```
 
 ### Commands
@@ -112,19 +92,19 @@ python3 -m venv venv && source venv/bin/activate && pip install -r requirements.
 ### Examples
 ```bash
 # Index a project
-python code_indexer.py remember --path ./my_project
+python indexer.py remember --path ./my_project
 
 # Refresh specific files
-python code_indexer.py refresh --project ./my_project --files foo.py,bar.py
+python indexer.py refresh --project ./my_project --files foo.py,bar.py
 
 # Recall all functions named 'foo'
-python code_indexer.py recall --entity-type function --name foo --project ./my_project
+python indexer.py recall --entity-type function --name foo --project ./my_project
 
 # Show status
-python code_indexer.py status --project ./my_project
+python indexer.py status --project ./my_project
 
 # Forget a project
-python code_indexer.py forget --project ./my_project
+python indexer.py forget --project ./my_project
 ```
 
 ---

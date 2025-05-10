@@ -1,4 +1,4 @@
-//! main entrypoint for code_indexer_rust
+//! main entrypoint for indexer
 //! - loads configuration
 //! - sets up logging
 //! - parses cli
@@ -12,10 +12,10 @@ mod logging;
 use crate::config::AppConfig;
 use crate::cli::{CliArgs, Commands};
 use crate::logging::setup_logging;
-use code_indexer_rust::redis_ops::{create_redis_client, store_file_content, store_code_entities, clear_file_data, query_code_entity};
+use indexer::redis_ops::{create_redis_client, store_file_content, store_code_entities, clear_file_data, query_code_entity};
 use fred::interfaces::SetsInterface;
-use code_indexer_rust::file_processing::collect_python_files;
-use code_indexer_rust::ast_parser::extract_code_info;
+use indexer::file_processing::collect_python_files;
+use indexer::ast_parser::extract_code_info;
 use clap::Parser;
 use log::info;
 use std::path::PathBuf;
@@ -24,12 +24,32 @@ use std::path::PathBuf;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Load config
     let config = AppConfig::load()?;
-    let key_prefix = "code_index"; // Use a static key prefix
-    // Setup logging
-    setup_logging(&config)?;
-
     // Parse CLI
     let args = CliArgs::parse();
+
+    // Determine project name for Redis key prefix
+    let project_name = if let Some(ref name) = args.name {
+        name.clone()
+    } else {
+        // Fallback: use last segment of path (for Remember) or current dir (for others)
+        match &args.command {
+            Commands::Remember { path } => {
+                PathBuf::from(path)
+                    .file_name()
+                    .map(|os| os.to_string_lossy().to_string())
+                    .unwrap_or_else(|| "default".to_string())
+            }
+            _ => {
+                std::env::current_dir()
+                    .ok()
+                    .and_then(|p| p.file_name().map(|os| os.to_string_lossy().to_string()))
+                    .unwrap_or_else(|| "default".to_string())
+            }
+        }
+    };
+    let key_prefix = format!("code_index:{}", project_name);
+    // Setup logging
+    setup_logging(&config)?;
 
     // Connect to Redis
     let redis = create_redis_client(config.redis_url.as_ref().unwrap()).await?;
@@ -44,9 +64,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let meta = tokio::fs::metadata(file).await?;
                 let size = meta.len() as usize;
                 let mtime = meta.modified()?.elapsed().unwrap_or_default().as_secs() as i64;
-                store_file_content(&redis, key_prefix, &rel_path, &content, size, mtime).await?;
+                store_file_content(&redis, &key_prefix, &rel_path, &content, size, mtime).await?;
                 let entities = extract_code_info(file, &app_dir);
-                store_code_entities(&redis, key_prefix, &entities).await?;
+                store_code_entities(&redis, &key_prefix, &entities).await?;
             }
             info!("Indexed {} files", files.len());
         }
@@ -60,14 +80,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let meta = tokio::fs::metadata(file).await?;
                 let size = meta.len() as usize;
                 let mtime = meta.modified()?.elapsed().unwrap_or_default().as_secs() as i64;
-                store_file_content(&redis, key_prefix, &rel_path, &content, size, mtime).await?;
+                store_file_content(&redis, &key_prefix, &rel_path, &content, size, mtime).await?;
                 let entities = extract_code_info(file, &app_dir);
-                store_code_entities(&redis, key_prefix, &entities).await?;
+                store_code_entities(&redis, &key_prefix, &entities).await?;
             }
             info!("Refreshed {} files", files.len());
         }
         Commands::Recall { entity_type, name, project: _ } => {
-            let results = query_code_entity(&redis, key_prefix, &entity_type, name.as_deref()).await?;
+            let results = query_code_entity(&redis, &key_prefix, &entity_type, name.as_deref()).await?;
             println!("{}", serde_json::to_string_pretty(&results)?);
         }
         Commands::Status { project: _ } => {
@@ -80,7 +100,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         Commands::Forget { project: _ } => {
             let files: Vec<String> = redis.smembers(format!("{}:file_index", key_prefix)).await.unwrap_or_default();
-            clear_file_data(&redis, key_prefix, &files).await?;
+            clear_file_data(&redis, &key_prefix, &files).await?;
             info!("Cleared all indexed data");
         }
     }
