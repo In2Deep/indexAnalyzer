@@ -1,0 +1,8 @@
+
+running 3 tests
+test test_config_load_default ... ok
+test test_store_and_query_file_content ... ok
+test test_store_and_query_entities ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
