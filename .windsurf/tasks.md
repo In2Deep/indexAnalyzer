@@ -4,8 +4,11 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 
 ## Open Tasks
 
-- [ ] Fix CLI to accept `--name` as a global argument. The current CLI only accepts positional arguments, so running with `--name` fails. Update argument parsing to support `--name` as documented, and ensure all commands use it for project namespacing.
+
+## Open Tasks
+
+(none)
 
 ## Completed Tasks
 
-- (none yet)
+- [x] Fix CLI to accept `--name` as a global argument. All commands now require `--name` for project namespacing in Redis. (commit: c83692b)
