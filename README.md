@@ -48,7 +48,7 @@ See `docs/configuration.md` for all options.
 
 ## Rust CLI Usage
 
-> **Note:** The Rust CLI supports the global `--name` (or `--project-name`) argument to specify the project name for Redis key prefixing. If not provided, the project name defaults to the last segment of the target directory. All Redis keys are namespaced as `code_index:<project>:...` to ensure project isolation.
+> **Note:** The Rust CLI uses the `--name` (or `--project-name`) argument to specify the project name for Redis key prefixing. This parameter is a finalized part of the interface and will not change. All Redis keys are namespaced as `code_index:<project>:...` to ensure project isolation.
 
 ### Install
 ```bash

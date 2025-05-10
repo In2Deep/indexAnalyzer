@@ -4,73 +4,77 @@
       "id": "absolute-path-integrity",
       "trigger": "always_on",
       "body": [
-        "All Redis keys that include file paths must use POSIX-style relative paths, calculated from the root app directory passed to the CLI. No absolute paths or OS-specific slashes may be present in the key."
+        "All Redis keys that include file paths must use POSIXstyle relative paths calculated from the root app directory passed to the CLI No absolute paths or OSspecific slashes may be present in the key"
       ]
     },
     {
       "id": "allow-explicit-project-name",
       "trigger": "always_on",
       "body": [
-        "The CLI must support an optional `--name` (alias: `--project-name`) argument that overrides the default project name inferred from the final path segment. When provided, this name must be used as the Redis key prefix."
+        "The CLI must support an optional name alias projectname argument that overrides the default project name inferred from the final path segment When provided this name must be used as the Redis key prefix"
       ]
     },
     {
       "id": "async-modular-idiomatic-rust",
       "trigger": "always_on",
       "body": [
-        "All Rust code must be written in an asynchronous, modular, and idiomatic style, adhering to best practices and the project's coding standards."
+        "All Rust code must be written in an asynchronous modular and idiomatic style adhering to best practices and the projects coding standards"
+      ]
+    },
+    {
+      "id": "autonomous-operation",
+      "trigger": "always_on",
+      "body": [
+        "Windsurf must perform tasks autonomously without unnecessary interruptions Only output messages for errors or workflow completion Do not pause to announce progress unless explicitly required by the workflow"
       ]
     },
     {
       "id": "cli-behavior-locked",
       "trigger": "always_on",
       "body": [
-        "All changes to CLI argument parsing must follow an explicit update to the roadmap. If a CLI subcommand expects positional arguments, it must be documented as such in README and code."
-      ]
-    },
-    {
-      "id": "error-handling-and-logging",
-      "trigger": "always_on",
-      "body": [
-        "All functions must handle errors gracefully and log them appropriately using the existing logging framework. No use of `unwrap()` or `expect()` outside of tests."
+        "All changes to CLI argument parsing must follow an explicit update to the roadmap If a CLI subcommand expects positional arguments it must be documented as such in README and code"
       ]
     },
     {
       "id": "enforce-consistent-key-prefix",
       "trigger": "always_on",
       "body": [
-        "Use a consistent Redis key prefix for all data. Derive from --name or project directory. Prevents cross-project contamination."
+        "- Use a consistent Redis key prefix for all data Derive from name or project directory Prevents crossproject contamination"
+      ]
+    },
+    {
+      "id": "error-handling-and-logging",
+      "trigger": "always_on",
+      "body": [
+        "All functions must handle errors gracefully and log them appropriately using the existing logging framework No use of unwrap or expect outside of tests"
       ]
     },
     {
       "id": "file-and-directory-hygiened",
       "trigger": "always_on",
       "body": [
-        "Maintain a clean and organized file and directory structure. Remove unused files and ensure that all directories serve a clear purpose."
+        "Maintain a clean and organized file and directory structure Remove unused files and ensure that all directories serve a clear purpose"
       ]
     },
     {
       "id": "function-touch-tests",
       "trigger": "always_on",
       "body": [
-        "Any edit inside a function body, signature, docstring, or even reordering must trigger full test execution for that function’s module.",
-        "No commits allowed unless all related tests pass.",
-        "If no test exists, halt execution and generate a skeleton test case before continuing.",
-        "Models may not bypass this with justification or \"small change\" excuses. No free passes."
+        "- Any edit inside a function body signature docstring or even reordering must trigger full test execution for that functions module - No commits allowed unless all related tests pass - If no test exists halt execution and generate a skeleton test case before continuing - Models may not bypass this with justification or small change excuses No free passes"
       ]
     },
     {
       "id": "git-useage",
       "trigger": "manual",
       "body": [
-        "Use `git add` and `git commit` before and after each code revision with appropriate commit messages to maintain a clear history of changes."
+        "Use git add and git commit before and after each code revision with appropriate commit messages to maintain a clear history of changes"
       ]
     },
     {
       "id": "handoff-procedure",
       "trigger": "always_on",
       "body": [
-        "Before handing off to another model or user, ensure all code is committed, tests pass, documentation is up to date, and no stubs or TODOs remain."
+        "Before handing off to another model or user ensure all code is committed tests pass documentation is up to date and no stubs or TODOs remain"
       ]
     },
     {
@@ -82,9 +86,9 @@
     },
     {
       "id": "lock-file-scope",
-      "trigger": "always_on",
+      "trigger": "manual",
       "body": [
-        "Only modify one file per session unless explicitly told otherwise. Finish what you start. Prevents sprawling breakage and diff chaos."
+        "- Only modify one file per session unless explicitly told otherwise. Finish what you start. Prevents sprawling breakage and diff chaos."
       ]
     },
     {
@@ -126,7 +130,7 @@
       "id": "no-implicit-key-prefixes",
       "trigger": "always_on",
       "body": [
-        "All Redis keys must use a prefix of the format `code:{project_name}` where `{project_name}` is derived from the basename of the root directory passed via the CLI."
+        "All Redis keys must use a prefix of the format code:{project_name} where {project_name} is derived from the basename of the root directory passed via the CLI."
       ]
     },
     {
@@ -140,7 +144,7 @@
       "id": "no-stubs-no-todos-no-future-work",
       "trigger": "always_on",
       "body": [
-        "Code must never contain `TODO`, `unimplemented!()`, or placeholder logic. All functionality must be complete or excluded intentionally."
+        "Code must never contain TODO, unimplemented!(), or placeholder logic. All functionality must be complete or excluded intentionally."
       ]
     },
     {
@@ -158,10 +162,24 @@
       ]
     },
     {
+      "id": "task-tracking",
+      "trigger": "always_on",
+      "body": [
+        "All project tasks must be tracked in .windsurf/tasks.md. Any new bug, feature, or improvement must be added as a checkbox item under \"Open Tasks\". When a task is completed, it must be moved to the \"Completed Tasks\" section with a brief completion note. No task may be closed without a reference to the commit or PR that resolved it."
+      ]
+    },
+    {
       "id": "yaml-configuration-only",
       "trigger": "always_on",
       "body": [
-        "All configuration must be loaded from `~/.indexer/config.yaml`. No use of `.env`, CLI flags, or alternative sources for config."
+        "All configuration must be loaded from ~/.indexer/config.yaml, except for sensitive values (such as API keys), which must be loaded from environment variables first. If not found in the environment, fall back to ~/.indexer/config.yaml. No hardcoding of secrets or use of alternative config sources is permitted."
+      ]
+    },
+    {
+      "id": "zero-warnings-required",
+      "trigger": "always_on",
+      "body": [
+        "# Rule: Zero Warnings Required - All code must compile and test with **zero warnings** and **zero errors**. Any warning is considered a defect and must be fixed immediately. - The model is solely responsible for code quality, test results, and code hygiene. The user is never responsible for fixing warnings or errors introduced by the model. - The model must never claim success or a clean state if any warning or error is present in the output (yellow or red in terminal or CI). - The model must follow the strict workflow in .windsurf/workflows/zero-warnings-model-accountable.md for every code change, test, and commit. - No warning may be silenced, deferred, or ignored. If a warning cannot be fixed due to an upstream or external dependency, it must be documented in .windsurf/tasks.md with a full justification. - Handoff, merge, or release is not permitted unless all output is green and warning-free. **This rule is absolute. Deviation is never permitted.** "
       ]
     }
   ]
