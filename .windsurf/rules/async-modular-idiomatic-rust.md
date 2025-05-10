@@ -1,5 +1,5 @@
 ---
-trigger: always_on
+trigger always_on
 ---
 
-All Rust code must be written in an asynchronous, modular, and idiomatic style, adhering to best practices and the project's coding standards.
+All Rust code must be written in an asynchronous modular and idiomatic style adhering to best practices and the projects coding standards
