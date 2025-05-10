@@ -4,10 +4,23 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 
 ## Open Tasks
 
+- [ ] Fix integration test failure for global `--name` parameter in CLI. Current implementation has `--name` defined per subcommand rather than globally as documented in the README.
 
-## Open Tasks
+- [ ] Implement `vectorize` subcommand for CLI as described in roadmap.md.
+  - Add arguments: `--name`, `--model`, `--db`, `--batch-size`, `--dry-run`, `--verbose`
+  - Update CLI documentation
 
+- [ ] Implement `vector-recall` subcommand for CLI as described in roadmap.md.
+  - Add arguments: `--name`, `--query`, `--top-k`, `--model`, `--db`
+  - Ensure output matches recall conventions
 
+- [ ] Create embedding trait abstraction (`Embedder`) and implement at least one backend.
+  - Read configuration from `~/.indexer/config.yaml` or env vars
+  - Add proper error handling and logging
+
+- [ ] Create vector database trait abstraction (`VectorStore`) and implement Redis backend.
+  - Ensure proper key prefixing for project isolation
+  - Add comprehensive logging for all operations
 
 
 ## Completed Tasks
