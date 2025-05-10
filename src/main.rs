@@ -27,35 +27,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Parse CLI
     let args = CliArgs::parse();
 
-    // Determine project name for Redis key prefix
-    let project_name = if let Some(ref name) = args.name {
-        name.clone()
-    } else {
-        // Fallback: use last segment of path (for Remember) or current dir (for others)
-        match &args.command {
-            Commands::Remember { path } => {
-                PathBuf::from(path)
-                    .file_name()
-                    .map(|os| os.to_string_lossy().to_string())
-                    .unwrap_or_else(|| "default".to_string())
-            }
-            _ => {
-                std::env::current_dir()
-                    .ok()
-                    .and_then(|p| p.file_name().map(|os| os.to_string_lossy().to_string()))
-                    .unwrap_or_else(|| "default".to_string())
-            }
-        }
+    // Determine project name for Redis key prefix (from each command)
+    let (key_prefix, cmd) = match args.command {
+        Commands::Remember { ref name, .. } => (format!("code_index:{}", name), args.command),
+        Commands::Refresh { ref name, .. } => (format!("code_index:{}", name), args.command),
+        Commands::Recall { ref project_name, .. } => (format!("code_index:{}", project_name), args.command),
+        Commands::Status { ref name } => (format!("code_index:{}", name), args.command),
+        Commands::Forget { ref name } => (format!("code_index:{}", name), args.command),
     };
-    let key_prefix = format!("code_index:{}", project_name);
     // Setup logging
     setup_logging(&config)?;
 
     // Connect to Redis
     let redis = create_redis_client(config.redis_url.as_ref().unwrap()).await?;
 
-    match args.command {
-        Commands::Remember { path } => {
+    match cmd {
+        Commands::Remember { name: _, path } => {
             let app_dir = PathBuf::from(path);
             let files = collect_python_files(&app_dir, None);
             for file in &files {
@@ -70,7 +57,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             info!("Indexed {} files", files.len());
         }
-        Commands::Refresh { files, project: _ } => {
+        Commands::Refresh { name: _, files } => {
             let app_dir = std::env::current_dir()?;
             let files: Vec<String> = files.split(',').map(|s| s.trim().to_string()).collect();
             let files = collect_python_files(&app_dir, Some(&files));
@@ -86,11 +73,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             info!("Refreshed {} files", files.len());
         }
-        Commands::Recall { entity_type, name, project: _ } => {
+        Commands::Recall { entity_type, name, project_name: _ } => {
             let results = query_code_entity(&redis, &key_prefix, &entity_type, name.as_deref()).await?;
             println!("{}", serde_json::to_string_pretty(&results)?);
         }
-        Commands::Status { project: _ } => {
+        Commands::Status { name: _ } => {
             let key = format!("{}:file_index", key_prefix);
             let files: Vec<String> = redis.smembers(&key).await.unwrap_or_default();
             println!("Indexed files: {}", files.len());
@@ -98,7 +85,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("- {}", f);
             }
         }
-        Commands::Forget { project: _ } => {
+        Commands::Forget { name: _ } => {
             let files: Vec<String> = redis.smembers(format!("{}:file_index", key_prefix)).await.unwrap_or_default();
             clear_file_data(&redis, &key_prefix, &files).await?;
             info!("Cleared all indexed data");

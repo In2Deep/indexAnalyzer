@@ -17,30 +17,32 @@ pub struct CliArgs {
 pub enum Commands {
     /// index code in a directory
     Remember {
+        #[arg(long = "name", alias = "project-name")]
+        name: String,
         #[arg(default_value = ".")]
         path: String,
     },
     /// update specific files in memory
     Refresh {
+        #[arg(long = "name", alias = "project-name")]
+        name: String,
         files: String,
-        #[arg(long)]
-        project: Option<String>,
     },
     /// search for code in memory
     Recall {
         entity_type: String,
         name: Option<String>,
-        #[arg(long)]
-        project: Option<String>,
+        #[arg(long = "name", alias = "project-name")]
+        project_name: String,
     },
     /// check what's in memory
     Status {
-        #[arg(long)]
-        project: Option<String>,
+        #[arg(long = "name", alias = "project-name")]
+        name: String,
     },
     /// clear indexed data
     Forget {
-        #[arg(long, default_value = ".")]
-        project: String,
+        #[arg(long = "name", alias = "project-name")]
+        name: String,
     },
 }
