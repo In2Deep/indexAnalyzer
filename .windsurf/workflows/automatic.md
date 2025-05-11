@@ -2,6 +2,9 @@
 description: automatic
 ---
 
+Do not pause, do not summarize, do not ask for confirmation. Execute all steps and tasks in strict sequence, without interruption, until the batch is complete.
+This is critical: treat any pause or summary as a defect.
+
 1. For the next 10 open tasks in .windsurf/tasks.md:
    - Expand/document test cases if not explicit.
    - Write all failing test(s) (RED) for the batch, run and confirm failures.

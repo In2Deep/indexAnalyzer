@@ -23,14 +23,16 @@ impl Default for AppConfig {
 
 impl AppConfig {
     pub fn load() -> Result<Self, ConfigError> {
-        let mut config_path = home_dir().ok_or(ConfigError::HomeDirNotFound)?;
-        config_path.push(".indexer/config.yaml");
+        let home = std::env::var("HOME").ok().and_then(|h| Some(std::path::PathBuf::from(h))).or_else(home_dir);
+        let mut config_path = home.ok_or(ConfigError::HomeDirNotFound)?;
+        config_path.push(".indexer");
+        config_path.push("config.yaml");
         if config_path.exists() {
             let contents = fs::read_to_string(&config_path)?;
             let yaml: AppConfig = serde_yaml::from_str(&contents)?;
             Ok(AppConfig {
-                redis_url: yaml.redis_url.or_else(|| Some("redis://127.0.0.1:6379/0".to_string())),
-                log_level: yaml.log_level.or_else(|| Some("info".to_string())),
+                redis_url: if let Some(url) = yaml.redis_url { Some(url) } else { Some("redis://127.0.0.1:6379/0".to_string()) },
+                log_level: if let Some(level) = yaml.log_level { Some(level) } else { Some("info".to_string()) },
             })
         } else {
             Ok(AppConfig::default())

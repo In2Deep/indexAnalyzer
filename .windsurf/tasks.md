@@ -31,18 +31,8 @@ This file is the canonical, visible list of tracked tasks for the project. All n
   - Parsing and validation covered by test_vectorize_parsing_provider_arg (present and absent cases). See commit <COMMIT_HASH_PLACEHOLDER>.
 
 - [ ] TDD: `vector-recall` subcommand structure
-  - **Test Cases:**
-    1. CLI parses required args: `--name` and `--query` must be present; missing either yields an error.
-    2. CLI parses optional arg: `--provider` (Some/None).
-    3. CLI parses optional arg: `--db` (Some/None).
-    4. CLI parses optional arg: `--top-k` (Some/None, integer).
-    5. CLI parses utility flag: `--json` (bool, default false).
-    6. Config fallback: If `--provider` not given, use config default if present.
-    7. Config fallback: If `--db` not given, use config default if present.
-    8. CLI overrides config: If both CLI and config values are given, CLI wins.
-    9. Error: If required args missing, parsing fails.
-  - **Test Spec:** Each test must check both presence and absence of args, and config fallback/override logic.
-
+  - **Test Spec:** Parsing/validation of required args (`--name`, `--query`), optional overrides (`--provider`, `--db`, `--top-k`), and utility flag (`--json`).
+  - **Test Spec:** Defaults/overrides logic from config.yaml.
 - [ ] TDD: Enhanced config system loading (global defaults, providers, vector DBs, env API keys).
 - [ ] TDD: CLI documentation and README update after TDD cycles complete.
 
