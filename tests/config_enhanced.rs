@@ -25,8 +25,16 @@ fn test_load_config_from_file() {
     let config_path = config_dir.join("config.yaml");
     fs::create_dir_all(&config_dir).unwrap();
     let _ = fs::remove_file(&config_path);
-    let yaml = "redis_url: redis://custom:6379/1\nlog_level: debug\n";
-    fs::write(&config_path, yaml).unwrap();
+    #[derive(serde::Serialize)]
+    struct TestConfig<'a> {
+        redis_url: &'a str,
+        log_level: &'a str,
+    }
+    let yaml_struct = serde_yaml::to_string(&TestConfig {
+        redis_url: "redis://custom:6379/1",
+        log_level: "debug",
+    }).unwrap();
+    fs::write(&config_path, yaml_struct).unwrap();
     let config = AppConfig::load().unwrap();
     assert_eq!(config.redis_url, Some("redis://custom:6379/1".to_string()));
     assert_eq!(config.log_level, Some("debug".to_string()));
@@ -37,9 +45,12 @@ fn test_load_config_from_file() {
 fn test_load_config_missing_home() {
     // Temporarily override HOME
     let orig_home = env::var("HOME").ok();
+    let orig_xdg = env::var("XDG_CONFIG_HOME").ok();
     env::remove_var("HOME");
+    env::remove_var("XDG_CONFIG_HOME");
     let result = AppConfig::load();
     if let Some(val) = orig_home { env::set_var("HOME", val); }
+    if let Some(val) = orig_xdg { env::set_var("XDG_CONFIG_HOME", val); }
     assert!(matches!(result, Err(ConfigError::HomeDirNotFound)));
 }
 
@@ -54,10 +65,10 @@ fn test_load_config_bad_yaml() {
     let real_config = config_dir.join("config.yaml");
     let backup = config_dir.join("config_backup.yaml");
     let real_exists = real_config.exists();
-    if real_exists { fs::rename(&real_config, &backup).unwrap(); }
-    fs::rename(&config_path, &real_config).unwrap();
+    if real_exists { let _ = fs::rename(&real_config, &backup); }
+    if config_path.exists() { let _ = fs::rename(&config_path, &real_config); }
     let result = AppConfig::load();
     assert!(matches!(result, Err(ConfigError::Yaml(_))));
     let _ = fs::remove_file(&real_config);
-    if real_exists { fs::rename(&backup, &real_config).unwrap(); }
+    if real_exists { let _ = fs::rename(&backup, &real_config); }
 }

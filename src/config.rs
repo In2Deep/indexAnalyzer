@@ -29,10 +29,14 @@ impl AppConfig {
         config_path.push("config.yaml");
         if config_path.exists() {
             let contents = fs::read_to_string(&config_path)?;
-            let yaml: AppConfig = serde_yaml::from_str(&contents)?;
+            let yaml: AppConfig = match serde_yaml::from_str(&contents) {
+                Ok(cfg) => cfg,
+                Err(e) => return Err(ConfigError::Yaml(e)),
+            };
+            let default = AppConfig::default();
             Ok(AppConfig {
-                redis_url: if let Some(url) = yaml.redis_url { Some(url) } else { Some("redis://127.0.0.1:6379/0".to_string()) },
-                log_level: if let Some(level) = yaml.log_level { Some(level) } else { Some("info".to_string()) },
+                redis_url: yaml.redis_url.or(default.redis_url),
+                log_level: yaml.log_level.or(default.log_level),
             })
         } else {
             Ok(AppConfig::default())
