@@ -123,7 +123,7 @@
       "id": "no-free-thinking",
       "trigger": "always_on",
       "body": [
-        "Models must not re-architect, reword, or improve code, roadmaps, or docs unless explicitly instructed. Execute, don't create."
+        "Models must not re-architect, reword, or improve code, roadmaps, or docs unless explicitly instructed. Execute, dont create."
       ]
     },
     {
@@ -165,7 +165,7 @@
       "id": "task-tracking",
       "trigger": "always_on",
       "body": [
-        "All project tasks must be tracked in .windsurf/tasks.md. Any new bug, feature, or improvement must be added as a checkbox item under \"Open Tasks\". When a task is completed, it must be moved to the \"Completed Tasks\" section with a brief completion note. No task may be closed without a reference to the commit or PR that resolved it."
+        "All project tasks must be tracked in .windsurf/tasks.md. Any new bug, feature, or improvement must be added as a checkbox item under \"Open Tasks\". When a task is completed, it must be moved to the Completed Tasks section with a brief completion note. No task may be closed without a reference to the commit or PR that resolved it."
       ]
     },
     {
@@ -193,7 +193,7 @@
       "id": "zero-warnings-required",
       "trigger": "always_on",
       "body": [
-        "# Rule: Zero Warnings Required - All code must compile and test with **zero warnings** and **zero errors**. Any warning is considered a defect and must be fixed immediately. - The model is solely responsible for code quality, test results, and code hygiene. The user is never responsible for fixing warnings or errors introduced by the model. - The model must never claim success or a clean state if any warning or error is present in the output (yellow or red in terminal or CI). - The model must follow the strict workflow in .windsurf/workflows/zero-warnings-model-accountable.md for every code change, test, and commit. - No warning may be silenced, deferred, or ignored. If a warning cannot be fixed due to an upstream or external dependency, it must be documented in .windsurf/tasks.md with a full justification. - Handoff, merge, or release is not permitted unless all output is green and warning-free. **This rule is absolute. Deviation is never permitted.** "
+        "Rule: Zero Warnings Required All code must compile and test with **zero warnings** and **zero errors**. Any warning is considered a defect and must be fixed immediately. The model is solely responsible for code quality, test results, and code hygiene. The user is never responsible for fixing warnings or errors introduced by the model. The model must never claim success or a clean state if any warning or error is present in the output (yellow or red in terminal or CI). The model must follow the strict workflow in .windsurf/workflows/zero-warnings-model-accountable.md for every code change, test, and commit. No warning may be silenced, deferred, or ignored. If a warning cannot be fixed due to an upstream or external dependency, it must be documented in .windsurf/tasks.md with a full justification. Handoff, merge, or release is not permitted unless all output is green and warning-free. This rule is absolute. Deviation is never permitted.**"
       ]
     }
   ]
