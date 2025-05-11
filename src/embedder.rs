@@ -18,7 +18,8 @@ impl OpenAIEmbedder {
 }
 
 impl Embedder for OpenAIEmbedder {
-    fn embed(&self, _input: &str) -> Vec<f32> {
+    fn embed(&self, input: &str) -> Vec<f32> {
+        log::info!("embedding input with OpenAI: {}", input);
         vec![1.0, 2.0, 3.0] // dummy
     }
 }

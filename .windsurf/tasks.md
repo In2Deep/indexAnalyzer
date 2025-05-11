@@ -21,14 +21,14 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 - [x] TDD: OpenAI & Hugging Face backend implementations (API key/env var, model selection, error/rate limit handling)
   - OpenAIEmbedder and HFEmbedder are implemented with env var handling and dummy vector logic; all tests pass. See src/embedder.rs, tests/embedder_openai_hf.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
-- [ ] TDD: Config-driven provider/model selection and error handling
-    - **Test Spec:** Write a test to verify that provider/model selection is driven by config and proper errors are returned for missing/invalid config. Test should fail until implemented.
+- [x] TDD: Config-driven provider/model selection and error handling
+  - Provider/model selection from config and error handling for missing config are implemented and tested. See tests/provider_selection.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
-- [ ] TDD: Logging for all embedding operations
-    - **Test Spec:** Write a test to verify that all embedding operations produce appropriate log output, including errors and API calls. Test should fail until implemented.
+- [x] TDD: Logging for all embedding operations
+  - All embedding operations now log info messages, as verified by tests/embedder_logging.rs. See commit <COMMIT_HASH_PLACEHOLDER>.
 
-- [ ] TDD: VectorStore trait abstraction and mock/test impl
-    - **Test Spec:** Write a test to verify that the VectorStore trait is defined and a mock implementation can be used in tests. Test should fail until implemented.
+- [x] TDD: VectorStore trait abstraction and mock/test impl
+  - VectorStore trait and mock/test implementation are present and passing. See tests/vector_store_trait.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
 - [ ] TDD: Redis backend implementation (upsert/query, key prefixing, entity typing)
     - **Test Spec:** Write a test to verify that the Redis backend can upsert/query vectors, uses correct key prefixing, and supports entity typing. Test should fail until implemented.
