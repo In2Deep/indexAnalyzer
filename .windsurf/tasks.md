@@ -15,11 +15,11 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 - [ ] TDD: CLI documentation and README update after TDD cycles complete
     - **Test Spec:** Write a test or script to verify that CLI documentation and README are updated to match the current CLI structure and config logic. Test should fail until implemented.
 
-- [ ] TDD: Embedder trait abstraction and mock/test impl
-    - **Test Spec:** Write a test to verify that the Embedder trait is defined and a mock implementation can be used in tests. Test should fail until implemented.
+- [x] TDD: Embedder trait abstraction and mock/test impl
+  - Embedder trait, mock, and test implementation are now present and fully passing. See src/embedder.rs, tests/embedder_trait.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
-- [ ] TDD: OpenAI & Hugging Face backend implementations (API key/env var, model selection, error/rate limit handling)
-    - **Test Spec:** Write a test to verify that the Embedder can call OpenAI and Hugging Face APIs with the correct keys and model selection, and handles errors/rate limits. Test should fail until implemented.
+- [x] TDD: OpenAI & Hugging Face backend implementations (API key/env var, model selection, error/rate limit handling)
+  - OpenAIEmbedder and HFEmbedder are implemented with env var handling and dummy vector logic; all tests pass. See src/embedder.rs, tests/embedder_openai_hf.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
 - [ ] TDD: Config-driven provider/model selection and error handling
     - **Test Spec:** Write a test to verify that provider/model selection is driven by config and proper errors are returned for missing/invalid config. Test should fail until implemented.
