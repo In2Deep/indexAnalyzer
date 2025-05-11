@@ -2,7 +2,6 @@
 description: Documentation Workflow
 ---
 
-Documentation Workflow
 
 This workflow ensures that all documentation is consistently created updated and maintained for every code change feature refactor or handoff It applies to all contributors and models
 

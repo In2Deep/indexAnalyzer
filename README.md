@@ -127,6 +127,14 @@ All usage and examples below refer to the Rust implementation only.
 ---
 
 ## Development
+
+### TDD Progress (2025-05-10)
+- All new features, including `vectorize` and vector search, are implemented via strict Red-Green-Refactor TDD cycles.
+- **CLI parsing for `vectorize`** (mandatory/optional args) is fully tested and stable (see `tests/cli_vectorize.rs`).
+- **Provider selection fallback logic**: If `--provider` is not specified, the default from config is selected (see `tests/vectorize_logic.rs`).
+- All TDD tasks and feature status are tracked in `.windsurf/tasks.md`.
+- See also: `docs/README.md` for advanced details.
+
 - See `docs/roadmap_part1.md`, `docs/roadmap_part2.md`, `docs/roadmap_part3.md` for feature and implementation details.
 - See `docs/dependency_setup.md` for dependency requirements.
 - All configuration is YAML-based (see above).

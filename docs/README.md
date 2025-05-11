@@ -86,6 +86,13 @@ All commands are available in the Rust CLI:
 ---
 
 ## Development & Roadmap
+
+### TDD-Driven Progress (2025-05-10)
+- `vectorize` subcommand: CLI parsing (mandatory/optional args) is fully tested and stable (see `tests/cli_vectorize.rs`).
+- Provider selection fallback logic (default from config if `--provider` is omitted) under strict TDD (see `tests/vectorize_logic.rs`).
+- All TDD tasks, feature specs, and current status are tracked in `.windsurf/tasks.md`.
+- All changes follow the documentation-workflow and test-and-commit-after-change workflows for complete traceability and compliance.
+
 - See `roadmap_part1.md`, `roadmap_part2.md`, `roadmap_part3.md` for details.
 - Only libraries and versions in `dependency_setup.md` are allowed.
 - All code must be async, modular, and tested.

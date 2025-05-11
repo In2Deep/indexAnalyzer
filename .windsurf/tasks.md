@@ -4,6 +4,20 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 
 ## Open Tasks
 
+
+## Completed Tasks
+
+- [x] TDD: select_provider_id returns error if no provider specified in CLI or config
+  - Implemented error return for missing provider in select_provider_id (test_provider_error_if_none_and_config_empty). See commit <COMMIT_HASH_PLACEHOLDER>.
+
+
+- [x] TDD: select_provider_id uses CLI value when --provider is specified
+  - Added and passed unit test for CLI override (test_provider_cli_overrides_config). See commit <COMMIT_HASH_PLACEHOLDER>.
+
+
+- [x] Implement provider selection fallback for vectorize subcommand
+  - Implemented select_provider_id and passing test (test_provider_fallback_to_config_default) in strict TDD cycle. See commit <COMMIT_HASH_PLACEHOLDER>.
+
 ### Legacy Tasks (Pre-TDD Workflow)
 - [ ] Fix integration test failure for global `--name` parameter in CLI. Current implementation has `--name` defined per subcommand rather than globally as documented in the README.
 
@@ -13,8 +27,9 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 
 ### CLI & Configuration
 - [x] TDD: vectorize subcommand parses mandatory args (`--name`, `--path`). (R-G-R complete, test: test_vectorize_parsing_mandatory_args)
-- [ ] TDD: vectorize subcommand parses optional override arg (`--provider`).
-  - **Test Spec:** Parsing/validation of --provider when present and absent; value is Some(str) if given, None if omitted. 
+- [x] TDD: vectorize subcommand parses optional override arg (`--provider`).
+  - Parsing and validation covered by test_vectorize_parsing_provider_arg (present and absent cases). See commit <COMMIT_HASH_PLACEHOLDER>.
+
 - [ ] TDD: `vector-recall` subcommand structure
   - **Test Spec:** Parsing/validation of required args (`--name`, `--query`), optional overrides (`--provider`, `--db`, `--top-k`), and utility flag (`--json`).
   - **Test Spec:** Defaults/overrides logic from config.yaml.
