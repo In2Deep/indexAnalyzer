@@ -88,9 +88,40 @@ cargo build --release
 - `recall --entity-type <function|class|...> [--name <name>] [--project <dir>]`: Query for code entities
 - `status [--project <dir>]`: Show indexed files and project info
 - `forget --project <dir>`: Remove all indexed data for a project
+- `vectorize --name <project> --model <provider> --db <backend> [--batch-size <N>] [--dry-run] [--verbose]`: Generate and index code embeddings for a project
+- `vector-recall --name <project> --query <text> [--top-k <N>] [--model <provider>] [--db <backend>] [--json]`: Semantic similarity search over indexed code entities
 
-### Vectorization (Upcoming Feature)
-Support for vectorizing code (generating embeddings for semantic search and LLM workflows) is planned. This will be available as a separate subcommand or flag (e.g., `vectorize` or `--vectorize`).
+### Vectorization (Planned Feature)
+Vector-based indexing and search is being added via two new subcommands:
+- `vectorize`: Batch-generate embeddings for code entities and store them in a vector database (default: Redis). Supports pluggable embedding providers (OpenAI, Hugging Face, OpenRouter).
+- `vector-recall`: Perform similarity search over indexed code using a query string.
+
+#### `vectorize` Arguments
+- `--name <project>`: Project name for namespacing embeddings
+- `--model <provider>`: Embedding provider (e.g., openai, huggingface, openrouter)
+- `--db <backend>`: Vector DB backend (e.g., redis)
+- `--batch-size <N>`: Batch size for indexing (optional)
+- `--dry-run`: Show what would be indexed, but do not write to DB (optional)
+- `--verbose`: Extra logging (optional)
+
+#### `vector-recall` Arguments
+- `--name <project>`: Project name for namespacing
+- `--query <text>`: Query string for similarity search
+- `--top-k <N>`: Number of results to return (optional)
+- `--model <provider>`: Embedding provider to use for query (optional)
+- `--db <backend>`: Vector DB backend (optional)
+- `--json`: Output results in machine-readable JSON (optional)
+
+#### Example Usage
+```bash
+# Vectorize a project with OpenAI embeddings, storing in Redis
+./target/release/indexer vectorize --name my_project --model openai --db redis --batch-size 100 --verbose
+
+# Semantic search for similar code entities
+./target/release/indexer vector-recall --name my_project --query "tokenize text" --top-k 5 --json
+```
+
+> **Development Note:** All new vector features are implemented using a strict TDD workflow. See `docs/roadmap.md` and `.windsurf/tasks.md` for development details and status.
 
 All usage and examples below refer to the Rust implementation only.
 ---
