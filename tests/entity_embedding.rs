@@ -1,6 +1,6 @@
 //! RED test for embedding generation for extracted entities
 
-use crate::extract_entities;
+use indexer::extract_entities;
 use indexer::embedder::{Embedder, OpenAIEmbedder};
 
 #[test]

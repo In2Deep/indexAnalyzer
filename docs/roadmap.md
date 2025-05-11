@@ -56,27 +56,27 @@ Overarching Process Note: Each item below represents a feature or a set of relat
     -   See README.md, docs/README.md, commit <COMMIT_HASH_PLACEHOLDER>.
 
 ### 4.2 Embedding Integration
--   Feature: Abstract embedding logic behind an Embedder trait.
-    -   Define trait methods e.g., generate_embeddings(texts: Vec<String>) -> Result<Vec<EmbeddingVector>, Error>.
-    -   TDD the trait definition by testing a mock/stub implementation if necessary for dependent components first, or by immediately testing a concrete implementation.
--   Feature: Implement Embedder backends e.g. OpenAI API Hugging Face.
-    -   TDD successful embedding generation using settings such as API key environment variable name model ID loaded from the AppConfig struct which is populated from ~/.indexer/config.yaml.
-    -   TDD error handling for API errors network issues specific to each backend.
-    -   TDD rate limit handling logic and retry mechanisms if applicable and configurable via AppConfig.
--   Task: Log all embedding operations success, failure, retries.
+-   Feature: Abstract embedding logic behind an Embedder trait. **[COMPLETE]**
+    -   Embedder trait is defined, tested, and used in all embedding workflows (see src/embedder.rs, tests/embedder_trait.rs).
+-   Feature: Implement Embedder backends e.g. OpenAI API Hugging Face. **[COMPLETE]**
+    -   OpenAI and Hugging Face backends are implemented, fully tested with env/config, and error/rate limit handling (see src/embedder.rs, tests/embedder_openai_hf.rs).
+-   Task: Log all embedding operations success, failure, retries. **[COMPLETE]**
+    -   All embedding operations log info messages, verified by tests/embedder_logging.rs.
 
 ### 4.3 Vector DB Abstraction
--   Feature: Abstract vector storage/retrieval behind a VectorStore trait.
-    -   Define trait methods e.g., upsert_vectors, query_similar_vectors.
-    -   TDD the trait definition.
--   Feature: Implement Redis VectorStore backend.
-    -   TDD vector upsert functionality.
-    -   TDD vector similarity search functionality.
-    -   TDD key prefixing and entity typing enforcement.
--   Task: Add logging for all Redis/vector DB operations adhering to @logging-required-for-redis.
--   Planning Note: Plan for future Qdrant/Pinecone backends by ensuring the trait is generic enough.
+-   Feature: Abstract vector storage/retrieval behind a VectorStore trait. **[COMPLETE]**
+    -   VectorStore trait is defined and tested (see src/vector_store.rs, tests/vector_store_trait.rs).
+-   Feature: Implement Redis VectorStore backend. **[COMPLETE]**
+    -   Redis backend supports upsert, query, key prefixing, and entity typing, all tested (see src/vector_store.rs, tests/vector_store_redis.rs).
+-   Task: Add logging for all Redis/vector DB operations adhering to @logging-required-for-redis. **[COMPLETE]**
+    -   All Redis/vector DB operations log info messages, verified by tests/vector_store_logging.rs.
+-   Planning Note: Plan for future Qdrant/Pinecone backends by ensuring the trait is generic enough. (Not started; future work)
 
 ### 4.4 Vector Indexing Workflow
+
+-   Code Coverage Enforcement **[COMPLETE]**
+    -   Coverage enforcement is handled by running `cargo tarpaulin --fail-under 80` in CI. The coverage test serves as a CI/manual guard and is documented for future contributors. This workflow keeps the TDD process clean and is the recommended enforcement method.
+
 -   Feature: Core entity extraction for vectorization reuse or adapt classic mode logic if possible, with tests ensuring no side-effects.
 -   Feature: Embedding generation for extracted entities.
     -   TDD the process of taking entities, calling the Embedder, and receiving vectors.
