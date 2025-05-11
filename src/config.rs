@@ -139,7 +139,10 @@ impl AppConfig {
                         vector_dbs: yaml.vector_dbs.or(default.vector_dbs),
                     })
                 },
-                Err(e) => Err(ConfigError::Yaml(e)),
+                Err(e) => {
+                    println!("APP DEBUG: YAML parse error: {}", e);
+                    Err(ConfigError::Yaml(e))
+                },
             }
         } else {
             Ok(AppConfig::default())

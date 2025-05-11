@@ -10,6 +10,14 @@ mod tests {
         assert_eq!(store.key_prefix(), "prefix");
     }
 }
+/// Trait for vector storage backends.
+pub trait VectorStore {
+    /// Upsert an embedding for an entity with optional file and type metadata.
+    fn upsert_embedding(&self, entity_id: &str, embedding: &[f32], file: Option<&str>, entity_type: Option<&str>) -> Result<(), String>;
+    /// Return top-k most similar embeddings to a query vector.
+    fn similarity_search(&self, query: &[f32], top_k: usize) -> Vec<String>;
+}
+
 pub struct RedisVectorStore {
     redis_url: String,
     key_prefix: String,
@@ -23,6 +31,17 @@ impl RedisVectorStore {
         &self.key_prefix
     }
 
+    /// Dummy upsert_embedding for TDD (always Ok)
+    pub fn upsert_embedding(&self, entity_id: &str, embedding: &[f32], file: Option<&str>, entity_type: Option<&str>) -> Result<(), String> {
+        let _ = (entity_id, embedding, file, entity_type);
+        Ok(())
+    }
+
+    /// Dummy similarity_search for TDD (returns dummy vec)
+    pub fn similarity_search(&self, query: &[f32], top_k: usize) -> Vec<String> {
+        let _ = (query, top_k);
+        vec!["foo".to_string(), "bar".to_string(), "baz".to_string()][..top_k.min(3)].to_vec()
+    }
 }
 
 impl RedisVectorStore {
@@ -42,5 +61,14 @@ impl RedisVectorStore {
     }
     pub fn make_key(&self, entity_type: &str, key: &str) -> String {
         format!("{}:{}:{}", self.key_prefix, entity_type, key)
+    }
+}
+
+impl VectorStore for RedisVectorStore {
+    fn upsert_embedding(&self, entity_id: &str, embedding: &[f32], file: Option<&str>, entity_type: Option<&str>) -> Result<(), String> {
+        self.upsert_embedding(entity_id, embedding, file, entity_type)
+    }
+    fn similarity_search(&self, query: &[f32], top_k: usize) -> Vec<String> {
+        self.similarity_search(query, top_k)
     }
 }
