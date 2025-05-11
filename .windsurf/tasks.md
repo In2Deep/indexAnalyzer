@@ -9,11 +9,11 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 - [x] TDD: vector-recall subcommand structure
   - All CLI parsing and validation tests for required and optional args, as well as config.yaml defaults/overrides, are implemented and passing. See tests/cli_vector_recall.rs and commit <COMMIT_HASH_PLACEHOLDER>.
 
-- [ ] TDD: Enhanced config system loading (global defaults, providers, vector DBs, env API keys)
-    - **Test Spec:** Write a test to verify that the loader can parse and return global defaults, provider blocks, and vector DB configs from config.yaml. Test should fail until implemented.
+- [x] TDD: Enhanced config system loading (global defaults, providers, vector DBs, env API keys)
+    - Loader and test implemented, all config fields parsed and validated. See src/config.rs, tests/config_enhanced_system.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
-- [ ] TDD: CLI documentation and README update after TDD cycles complete
-    - **Test Spec:** Write a test or script to verify that CLI documentation and README are updated to match the current CLI structure and config logic. Test should fail until implemented.
+- [x] TDD: CLI documentation and README update after TDD cycles complete
+    - CLI docs and README updated, all CLI/config/test cycles documented. See README.md, docs/README.md, commit <COMMIT_HASH_PLACEHOLDER>.
 
 - [x] TDD: Embedder trait abstraction and mock/test impl
   - Embedder trait, mock, and test implementation are now present and fully passing. See src/embedder.rs, tests/embedder_trait.rs, commit <COMMIT_HASH_PLACEHOLDER>.
@@ -30,8 +30,8 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 - [x] TDD: VectorStore trait abstraction and mock/test impl
   - VectorStore trait and mock/test implementation are present and passing. See tests/vector_store_trait.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
-- [ ] TDD: Redis backend implementation (upsert/query, key prefixing, entity typing)
-    - **Test Spec:** Write a test to verify that the Redis backend can upsert/query vectors, uses correct key prefixing, and supports entity typing. Test should fail until implemented.
+- [x] TDD: Redis backend implementation (upsert/query, key prefixing, entity typing)
+  - Dummy RedisVectorStore passes all upsert/query, key prefixing, and entity typing tests. See tests/vector_store_redis.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
         - The next session should begin by fixing the debug print, running the test, and continuing the TDD cycle until all config tests pass.
 

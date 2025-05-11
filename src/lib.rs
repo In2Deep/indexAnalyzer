@@ -1,5 +1,9 @@
 pub mod config;
 pub mod embedder;
+pub mod vector_store;
+pub mod output_format;
+pub mod extract_entities;
+pub use extract_entities::extract_entities;
 pub mod error;
 pub mod cli;
 pub mod logging;

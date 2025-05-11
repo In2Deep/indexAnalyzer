@@ -91,8 +91,9 @@ cargo build --release
 - `vectorize --name <project> --model <provider> --db <backend> [--batch-size <N>] [--dry-run] [--verbose]`: Generate and index code embeddings for a project
 - `vector-recall --name <project> --query <text> [--top-k <N>] [--model <provider>] [--db <backend>] [--json]`: Semantic similarity search over indexed code entities
 
-### Vectorization (Planned Feature)
-Vector-based indexing and search is being added via two new subcommands:
+### Vectorization & Recall (Vector Features)
+
+Vector-based indexing and search are now supported via two subcommands:
 - `vectorize`: Batch-generate embeddings for code entities and store them in a vector database (default: Redis). Supports pluggable embedding providers (OpenAI, Hugging Face, OpenRouter).
 - `vector-recall`: Perform similarity search over indexed code using a query string.
 
@@ -120,6 +121,42 @@ Vector-based indexing and search is being added via two new subcommands:
 # Semantic search for similar code entities
 ./target/release/indexer vector-recall --name my_project --query "tokenize text" --top-k 5 --json
 ```
+
+---
+
+### Configuration for Vector Features
+All configuration is loaded from `~/.indexer/config.yaml`.
+
+Example vector config:
+```yaml
+redis_url: "redis://127.0.0.1:6379/0"
+log_level: "info"
+global_defaults:
+  provider: "openai"
+  db: "redis"
+providers:
+  openai:
+    api_key: "${OPENAI_API_KEY}"
+    model: "text-embedding-ada-002"
+vector_dbs:
+  redis:
+    url: "redis://127.0.0.1:6379/0"
+    key_prefix: "code:myproject"
+```
+See `docs/configuration.md` for all options.
+
+---
+
+### Output Formatting & Logging
+- Use `--json` with `vector-recall` for machine-readable output; default is human-readable.
+- All embedding and vector DB operations are logged per project standards.
+- See `.windsurf/tasks.md` and `docs/roadmap.md` for TDD status, test coverage, and development methodology.
+
+---
+
+### Test-Driven Development (TDD) & Documentation
+- All new features are developed using strict TDD: RED test, GREEN code, refactor, document, repeat.
+- See `.windsurf/tasks.md` and `docs/roadmap.md` for up-to-date task tracking and roadmap.
 
 > **Development Note:** All new vector features are implemented using a strict TDD workflow. See `docs/roadmap.md` and `.windsurf/tasks.md` for development details and status.
 

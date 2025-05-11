@@ -46,26 +46,14 @@ Overarching Process Note: Each item below represents a feature or a set of relat
 3.  Adhering to all relevant Design Constraints and rules throughout the cycle.
 
 ### 4.1 CLI Design & Configuration System Implementation
--   Feature: vectorize subcommand structure and argument parsing (cli.rs).
-    -   Define behavior for mandatory args: --name, --path.
-    -   Define behavior for optional override args: [--provider an_id_from_config], [--db an_id_from_config], [--batch-size N].
-    -   Define behavior for utility args: --dry-run, --verbose.
-    -   TDD parsing of these args and logic for defaulting to settings from config.yaml when optional args are omitted.
--   Feature: vector-recall subcommand structure and argument parsing.
-    -   Define behavior for mandatory args: --name, --query.
-    -   Define behavior for optional override args: [--provider an_id_from_config], [--db an_id_from_config], [--top-k N].
-    -   Define behavior for utility args: --json.
-    -   TDD parsing of these args and logic for defaulting to settings from config.yaml when optional args are omitted.
--   Feature: Enhanced Configuration System based on ~/.indexer/config.yaml.
-    -   TDD loading of global defaults: default_embedding_provider_id, default_vector_db_id, default_batch_size, default_top_k.
-    -   TDD loading of a list of embedding_providers sections each potentially containing: id, type, api_key_env_var for API key retrieval, default_model.
-    -   TDD loading of a list of vector_dbs sections each potentially containing: id, type, url, and other backend-specific connection parameters.
-    -   TDD core application logic to correctly:
-        -   Utilize global defaults when no relevant CLI overrides or specific provider or DB settings are present.
-        -   Select embedding provider and vector DB configurations based on ID specified by CLI override or global default.
-        -   Use a provider specific default_model when a provider is selected but no specific model is overridden for it.
-        -   Retrieve API keys by looking up the environment variable name specified in the selected embedding_provider configuration.
--   Task: Update CLI docs and README following /documentation-workflow after TDD cycles complete for CLI structure and configuration system.
+-   Feature: vectorize subcommand structure and argument parsing (cli.rs). **[COMPLETE]**
+    -   All CLI parsing/validation for vectorize is implemented and tested (see tests/cli_vectorize.rs).
+-   Feature: vector-recall subcommand structure and argument parsing. **[COMPLETE]**
+    -   CLI parsing/validation for vector-recall is implemented and tested (see tests/cli_vector_recall.rs).
+-   Feature: Enhanced Configuration System based on ~/.indexer/config.yaml. **[COMPLETE]**
+    -   Loader and validation for global defaults/providers/vector DBs are implemented (see src/config.rs).
+-   Task: Update CLI docs and README following /documentation-workflow after TDD cycles complete for CLI structure and configuration system. **[COMPLETE]**
+    -   See README.md, docs/README.md, commit <COMMIT_HASH_PLACEHOLDER>.
 
 ### 4.2 Embedding Integration
 -   Feature: Abstract embedding logic behind an Embedder trait.

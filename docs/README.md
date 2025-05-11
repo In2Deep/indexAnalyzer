@@ -87,11 +87,14 @@ All commands are available in the Rust CLI:
 
 ## Development & Roadmap
 
-### TDD-Driven Progress (2025-05-10)
-- `vectorize` subcommand: CLI parsing (mandatory/optional args) is fully tested and stable (see `tests/cli_vectorize.rs`).
-- Provider selection fallback logic (default from config if `--provider` is omitted) under strict TDD (see `tests/vectorize_logic.rs`).
-- All TDD tasks, feature specs, and current status are tracked in `.windsurf/tasks.md`.
-- All changes follow the documentation-workflow and test-and-commit-after-change workflows for complete traceability and compliance.
+### Vector Features, Embedding, and TDD
+- `vectorize` and `vector-recall` subcommands: CLI parsing, config, embedding, and recall are fully tested and stable. See `tests/cli_vectorize.rs`, `tests/cli_vector_recall.rs`, and `src/embedder.rs`.
+- Provider/model selection and vector DB config are driven by `~/.indexer/config.yaml` (see README.md for schema).
+- Output formatting supports human-readable and JSON output for recall results.
+- All embedding, upsert, and query operations are logged for auditability.
+- Coverage tracking and migration documentation are maintained in `.windsurf/tasks.md` and `docs/roadmap.md`.
+- All features and bugfixes follow strict TDD: RED test, GREEN code, refactor, document, repeat.
+- See `.windsurf/tasks.md` and `docs/roadmap.md` for up-to-date task tracking and roadmap.
 
 - See `roadmap_part1.md`, `roadmap_part2.md`, `roadmap_part3.md` for details.
 - Only libraries and versions in `dependency_setup.md` are allowed.

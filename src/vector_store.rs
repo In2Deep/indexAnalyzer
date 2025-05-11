@@ -21,6 +21,6 @@ impl RedisVectorStore {
         Ok(vec![1.0, 2.0, 3.0])
     }
     pub fn make_key(&self, entity_type: &str, key: &str) -> String {
-        format!("{}:{}:{}:{}", self.key_prefix, entity_type, key)
+        format!("{}:{}:{}", self.key_prefix, entity_type, key)
     }
 }
