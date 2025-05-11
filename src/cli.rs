@@ -66,4 +66,20 @@ pub enum Commands {
         #[arg(long = "verbose")]
         verbose: bool,
     },
+    /// recall/query vector embeddings for code/project
+    VectorRecall {
+        #[arg(long = "name", alias = "project-name")]
+        name: String,
+        #[arg(long = "query")]
+        query: String,
+        #[arg(long = "provider")]
+        provider: Option<String>,
+        #[arg(long = "db")]
+        db: Option<String>,
+        #[arg(long = "top-k")]
+        top_k: Option<usize>,
+        #[arg(long = "json")]
+        json: bool,
+    },
+
 }

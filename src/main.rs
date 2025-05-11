@@ -35,6 +35,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::Status { ref name } => (format!("code_index:{}", name), args.command),
         Commands::Forget { ref name } => (format!("code_index:{}", name), args.command),
         Commands::Vectorize { ref name, .. } => (format!("code_index:{}", name), args.command),
+        Commands::VectorRecall { ref name, .. } => (format!("code_index:{}", name), args.command),
     };
     // Setup logging
     setup_logging(&config)?;
@@ -100,6 +101,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         Commands::Vectorize { .. } => {
             todo!("Vectorize subcommand logic not yet implemented (TDD: placeholder)");
+        }
+        Commands::VectorRecall { .. } => {
+            todo!("VectorRecall subcommand logic not yet implemented (TDD: placeholder)");
         }
     }
     Ok(())

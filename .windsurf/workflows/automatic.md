@@ -1,26 +1,16 @@
 ---
-description: enables autonomous mode
+description: automatic
 ---
 
-
----
-
-1 Task Selection
-- Read tasks.md and select the first uncompleted task in the Open Tasks section.
-- If no tasks remain, idle until new tasks are added.
-
-2 Task Execution
-- Execute the selected task according to its description and any applicable rules in dot windsurf rules.
-- Apply relevant workflows from dot windsurf workflows as specified by the task or rules.
-
-3 Task Completion
-- Mark the task as complete in dot windsurf tasks dot md by moving it to the Completed Tasks section.
-- Update any required task metadata, such as completion date or references, per existing rules.
-
-4 Loop to Next Task
-- Immediately select the next uncompleted task from dot windsurf tasks dot md and repeat the process.
-- Continue looping until no tasks remain or autonomous mode is disabled.
-
----
-
-No deviations are permitted unless explicitly approved in dot windsurf tasks dot md. This workflow must remain generic and compatible with all projects, respecting autonomous-operation and existing rules.
+1. For the next 10 open tasks in .windsurf/tasks.md:
+   - Expand/document test cases if not explicit.
+   - Write all failing test(s) (RED) for the batch, run and confirm failures.
+   - Implement the minimal code to pass each test (GREEN), running tests after each change.
+   - Refactor for clarity/idiomatic Rust after batch GREEN phase, re-run all tests.
+   - Update all relevant documentation (README, docs, inline, etc.) for all completed tasks in a single doc update pass if possible.
+   - Commit after each task or batch, with clear messages and references.
+   - Mark each task as completed in .windsurf/tasks.md with summary and commit reference.
+2. If tasks are independent, process test-writing and documentation updates in parallel to save time.
+3. On any failure, log the error, attempt self-repair, and continue with the next task if possible.
+4. After N tasks, output a summary table: Task → Status → Commit Hash → Notes.
+5. All steps must strictly follow TDD, documentation, and task-tracking workflows, and comply with all project rules
