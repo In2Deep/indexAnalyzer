@@ -1,94 +1,133 @@
-# Roadmap: Vectoring Upgrade for Code Indexer
+# Roadmap: Vectoring Upgrade for Code Indexer (TDD-Driven)
 
 ## 1. Objectives
 - Add robust vector-based indexing and search to the code indexer, supporting code entity embeddings and similarity queries.
 - Maintain strict separation between classic and vector workflows—no cross-contamination of logic or keys.
 - Preserve and document all existing CLI functionality and workflows.
-- Ensure all changes are modular, fully async, and warning-free.
+- Ensure all changes are modular, fully async, and warning-free, developed using a strict Test-Driven Development methodology.
 
 ## 2. Requirements
-- **CLI:** New `vectorize` subcommand for vector indexing, and `vector-recall` for similarity search.
+- CLI: New vectorize subcommand for vector indexing, and vector-recall for similarity search.
   - Arguments: embedding model, vector DB backend, batch size, dry-run, verbose, etc.
-- **Embedding:** Pluggable support for at least one embedding provider (OpenAI, Hugging Face, or local model), with config in `~/.indexer/config.yaml`.
-- **Vector DB:** Store embeddings in a configurable vector database (Redis, Qdrant, Pinecone, etc.), defaulting to Redis.
-- **Recall:** Implement similarity search over stored vectors, with CLI output matching recall conventions.
-- **Testing:** Comprehensive async tests for all new logic, covering success and failure paths.
-- **Docs:** Full documentation and usage examples for vector workflows, config, and migration.
+- Embedding: Pluggable support for OpenAI, Hugging Face and OpenRouter
+- Vector DB: Store embeddings in a configurable vector database Redis
+- Recall: Implement similarity search over stored vectors, with CLI output matching recall conventions.
+- Testing: All new logic will be developed following the rule @TDD-Workflow-Feature-Development-Cycle.md, ensuring comprehensive async tests covering success and failure paths for every unit of behavior.
+- Docs: Full documentation and usage examples for vector workflows, config, and migration, generated alongside development.
 
 ## 3. Design Constraints
-- **Async Workflow:** All code must follow the `test-and-commit-after-change.md` workflow.
-- **Documentation Workflow:** All code must follow the `documentation-workflow.md` workflow.
-- **Mandatory Testing:** All code must follow the `mandatory-testing.md` workflow.
-- **No Creative Output:** All code must follow the `no-creative-output.md` workflow.
-- **No Free Thinking:** All code must follow the `no-free-thinking.md` workflow.
-- **No Stubs or TODOs:** All code must follow the `no-stubs-no-todos-no-future-work.md` workflow.
-- **Project Structure:** No architectural deviation or new modules/files unless explicitly added to roadmap and README.
-- **Dependencies:** No new crates without explicit approval and README update.
-- **Async Discipline:** All code must be async and idiomatic Rust (Tokio, async traits, etc.).
-- **Zero Warnings:** All code must compile and test with zero warnings/errors at all times.
-- **Error Handling:** All errors must be logged and surfaced per project standards—no silent failures.
-- **Key Hygiene:** Vector keys must use proper namespacing and never pollute classic keys.
+- Core Development Methodology: All new feature development and significant modifications outlined in this roadmap MUST strictly adhere to the rule @TDD-Workflow-Feature-Development-Cycle.md.
+- Async Workflow: All code must follow the rule @test-and-commit-after-change.md workflow which will be synergistic with the TDD cycle commits.
+- Documentation Workflow: All code must follow the rule @documentation-workflow.md workflow.
+- Mandatory Testing via TDD: The rule @mandatory-testing.md principles are fulfilled and superseded by the comprehensive nature of the rule @TDD-Workflow-Feature-Development-Cycle.md.
+- No Creative Output: All code must follow the rule @no-creative-output.md workflow; minimal code to pass tests is paramount in the GREEN phase of TDD.
+- No Free Thinking: All code must follow the rule @no-free-thinking.md workflow.
+- No Stubs or TODOs: All code must follow the rule @no-stubs-no-todos-no-future-work.md workflow.
+- Project Structure: No architectural deviation or new modules/files unless explicitly added to roadmap, README, and first defined by failing tests.
+- Dependencies: No new crates without explicit approval, README update, and consideration for testability.
+- Async Discipline: All code must be async and idiomatic Rust Tokio, async traits, etc. adhering to rule @async-modular-idiomatic-rust.
+- Zero Warnings: All code must compile and test with zero warnings/errors at all times, verified at each step of the TDD cycle, as per rule @zero-warnings-required.
+- Error Handling: All errors must be logged and surfaced per project standards—no silent failures; error paths MUST be tested, following rule @error-handling-and-logging and rule @no-silent-errors.
+- Key Hygiene: Vector keys must use proper namespacing and never pollute classic keys; test cases must verify this, following rule @isolate-project-state and rule @enforce-consistent-key-prefix.
 
-## 4. Implementation Plan (Detailed)
-### 4.1 CLI Design
-- Add `vectorize` subcommand to CLI parser (`cli.rs`).
-  - Args: `--name`, `--model`, `--db`, `--batch-size`, `--dry-run`, `--verbose`.
-- Add `vector-recall` subcommand for similarity search.
-  - Args: `--name`, `--query`, `--top-k`, `--model`, `--db`.
-- Update CLI docs and README accordingly.
+## 4. Implementation Plan (TDD-Driven)
+
+Overarching Process Note: Each item below represents a feature or a set of related behaviors. Development for every item will proceed by:
+1.  Creating/updating a specific task in .windsurf/tasks.md (as per rule @task-tracking).
+2.  Strictly following all phases of the rule @TDD-Workflow-Feature-Development-Cycle.md:
+    - Phase 1: Task Definition & Test Specification.
+    - Phase 2: Write Failing Test (RED).
+    - Phase 3: Write Minimal Code to Pass (GREEN).
+    - Phase 4: Refactor.
+    - Phase 5: Cycle Completion.
+3.  Adhering to all relevant Design Constraints and rules throughout the cycle.
+
+### 4.1 CLI Design & Implementation
+-   Feature: vectorize subcommand structure and argument parsing (cli.rs).
+    -   Define behavior for args: --name, --model, --db, --batch-size, --dry-run, --verbose.
+    -   TDD each arguments parsing and basic validation.
+-   Feature: vector-recall subcommand structure and argument parsing.
+    -   Define behavior for args: --name, --query, --top-k, --model, --db.
+    -   TDD each arguments parsing and basic validation.
+-   Task: Update CLI docs and README following rule @documentation-workflow.md after TDD cycles complete for CLI structure.
 
 ### 4.2 Embedding Integration
-- Abstract embedding logic behind a trait (e.g., `Embedder`).
-- Implement at least one backend (OpenAI API, or local model if preferred).
-- Read embedding config from `~/.indexer/config.yaml` or env.
-- Handle rate limits, errors, and retries with proper logging.
+-   Feature: Abstract embedding logic behind an Embedder trait.
+    -   Define trait methods e.g., generate_embeddings(texts: Vec<String>) -> Result<Vec<EmbeddingVector>, Error>.
+    -   TDD the trait definition by testing a mock/stub implementation if necessary for dependent components first, or by immediately testing a concrete implementation.
+-   Feature: Implement first Embedder backend e.g., OpenAI API.
+    -   TDD successful embedding generation.
+    -   TDD error handling API errors, network issues.
+    -   TDD configuration loading from ~/.indexer/config.yaml or environment variables.
+    -   TDD rate limit handling logic and retry mechanisms if applicable.
+-   Task: Log all embedding operations success, failure, retries.
 
 ### 4.3 Vector DB Abstraction
-- Abstract vector storage/retrieval behind a trait (e.g., `VectorStore`).
-- Implement Redis backend first; plan for Qdrant/Pinecone as future options.
-- Ensure all keys use strict project prefixing and entity typing.
-- Add logging for all Redis/vector DB operations.
+-   Feature: Abstract vector storage/retrieval behind a VectorStore trait.
+    -   Define trait methods e.g., upsert_vectors, query_similar_vectors.
+    -   TDD the trait definition.
+-   Feature: Implement Redis VectorStore backend.
+    -   TDD vector upsert functionality.
+    -   TDD vector similarity search functionality.
+    -   TDD key prefixing and entity typing enforcement.
+-   Task: Add logging for all Redis/vector DB operations adhering to rule @logging-required-for-redis.
+-   Planning Note: Plan for future Qdrant/Pinecone backends by ensuring the trait is generic enough.
 
 ### 4.4 Vector Indexing Workflow
-- Extract entities as in classic mode.
-- For each entity, generate embedding and store in vector DB with metadata (file, entity type, signature, etc.).
-- Support batch processing and progress logging.
-- On error, log and continue (unless fatal).
+-   Feature: Core entity extraction for vectorization reuse or adapt classic mode logic if possible, with tests ensuring no side-effects.
+-   Feature: Embedding generation for extracted entities.
+    -   TDD the process of taking entities, calling the Embedder, and receiving vectors.
+-   Feature: Storing embeddings with metadata in the VectorStore.
+    -   TDD the linkage of entities, their embeddings, and relevant metadata file, entity type, signature.
+-   Feature: Batch processing for indexing.
+    -   TDD batching logic.
+    -   TDD progress logging during batch processing.
+-   Feature: Error handling during indexing log and continue for non-fatal errors.
+    -   TDD various error scenarios and confirm correct behavior.
 
 ### 4.5 Vector Recall/Search
-- Implement similarity search CLI, returning top-K matches with metadata.
-- Output must be human-readable and optionally machine-parseable (e.g., JSON flag).
-- Log all query parameters and results.
+-   Feature: Similarity search CLI command core logic.
+    -   TDD retrieval of query, calling VectorStore, and getting top-K matches.
+-   Feature: Output formatting for recall results.
+    -   TDD human-readable output.
+    -   TDD optional machine-parseable output e.g., JSON via a flag.
+-   Task: Log all query parameters and results.
 
 ### 4.6 Migration & Compatibility
-- Classic and vector data must coexist; never overwrite or mix keys.
-- Provide migration instructions if schema changes are required.
+-   Task: Define and test strategies to ensure classic and vector data coexist without key mixing or overwrites. Test cases MUST verify this isolation, following rule @isolate-project-state.
+-   Task: Document migration instructions if any schema changes are anticipated or become necessary.
 
-### 4.7 Testing
-- For every function and logic block, add or expand async tests (success and failure cases).
-- No commit allowed unless all tests pass and zero warnings.
-- If no test exists, generate a skeleton and halt until implemented.
+### 4.7 Testing Strategy (Fulfilled by TDD Workflow)
+-   The primary testing strategy IS the rule @TDD-Workflow-Feature-Development-Cycle.md.
+-   This workflow inherently covers:
+    -   Unit tests for every function and logical block of behavior.
+    -   Integration tests as features combine e.g., CLI -> Embedder -> VectorStore.
+    -   Testing of success and failure paths for each behavior.
+    -   Ensuring no commit occurs unless all tests pass and zero warnings are present as per rule @zero-warnings-required.
+    -   Generation of placeholder tests and halting if a behavior is to be implemented without a prior failing test specification.
+-   Coverage will be tracked using tools like tarpaulin, aiming for >90 percent as a baseline, with critical paths at 100 percent.
 
-### 4.8 Documentation
-- Update all READMEs and usage docs for new commands and config.
-- Add migration notes and troubleshooting for vector features.
-- Document test coverage and known limitations.
+### 4.8 Documentation (Integrated with TDD)
+-   Update all READMEs and usage docs for new commands and configurations will occur as features are completed and proven through the TDD cycle, following rule @documentation-workflow.md.
+-   Migration notes and troubleshooting sections will be developed based on tested scenarios and potential failure points identified during TDD.
+-   Test coverage reports will form part of the documentation suite.
 
 ## 5. Forbidden Actions
-- No changes to classic indexing unless required for compatibility (must be documented).
-- No stubs, TODOs, or incomplete code.
-- No silent errors, warning suppression, or unlogged failures.
-- No creative output or deviation from this roadmap unless explicitly approved and documented.
+- No changes to classic indexing unless required for compatibility must be documented and developed via its own TDD cycle.
+- No stubs, TODOs, or incomplete code enforced by TDD workflow and rule @no-stubs-no-todos-no-future-work.md.
+- No silent errors, warning suppression, or unlogged failures TDD error path testing and rule @error-handling-and-logging / rule @no-silent-errors apply.
+- No creative output or deviation from this roadmap unless explicitly approved, documented, and developed via a new TDD cycle for that approved change, adhering to rule @no-creative-output.md.
 
 ## 6. Milestones
-- [ ] CLI updated with vector commands and fully documented
-- [ ] Embedding integration complete and tested
-- [ ] Vector DB abstraction complete and tested
-- [ ] End-to-end vector indexing workflow working
-- [ ] Vector recall/search working and tested
-- [ ] All tests passing, zero warnings
-- [ ] Documentation and migration notes complete
+(Milestones now reflect completion of features developed via TDD)
+- [ ] vectorize & vector-recall CLI command structures defined, argument parsing TDD-complete & documented.
+- [ ] Embedder trait and first backend implementation TDD-complete, config loading tested.
+- [ ] VectorStore trait and Redis backend TDD-complete, including key hygiene tests.
+- [ ] End-to-end vector indexing workflow TDD-complete entity extraction, embedding, storing, batching, error handling.
+- [ ] Vector recall/search core logic and output formatting TDD-complete.
+- [ ] All integration points tested, all individual features TDD-complete, zero warnings system-wide.
+- [ ] Final documentation, usage examples, and migration notes complete and verified.
 
 ---
 
-*All changes must reference this roadmap and be tracked in .windsurf/tasks.md. No handoff or merge unless every milestone is green and warning-free.*
+All changes must reference this roadmap and be tracked in .windsurf/tasks.md (as per rule @task-tracking). Each task in .windsurf/tasks.md will be implemented following the rule @TDD-Workflow-Feature-Development-Cycle.md. No handoff or merge unless every relevant milestones underlying TDD cycles are green, refactored, and warning-free, as per rule @handoff-procedure.
