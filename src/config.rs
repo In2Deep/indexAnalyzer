@@ -86,8 +86,8 @@ pub struct AppConfig {
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
-            redis_url: None,
-            log_level: None,
+            redis_url: Some("redis://127.0.0.1:6379/0".to_string()),
+            log_level: Some("info".to_string()),
             global_defaults: None,
             providers: None,
             vector_dbs: None,
