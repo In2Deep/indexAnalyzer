@@ -4,6 +4,63 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 
 ## Open Tasks
 
+******************************** 11:40pm 5/10/2025 PDT********************************
+
+- [ ] TDD: Enhanced Configuration System – Debugging and Completing Config Loader Robustness
+
+    **Current Status (2025-05-10 23:39 PDT):**
+
+    1. We are in the midst of a strict TDD cycle focused on making the configuration loader (`AppConfig::load` in `src/config.rs`) robust to all error conditions, with a focus on correct error propagation and test isolation.
+
+    2. The following tests in `tests/config_enhanced.rs` are under active development and debugging:
+       - `test_load_config_with_global_defaults` (PASSING)
+       - `test_load_config_from_file` (FAILING: HomeDirNotFound)
+       - `test_load_config_bad_yaml` (FAILING: HomeDirNotFound)
+       - `test_load_config_missing_home` (PASSING)
+
+    3. The primary technical blocker is that, despite setting the `HOME` environment variable to a valid temporary directory (created with `tempfile::tempdir()`), the config loader still returns `ConfigError::HomeDirNotFound` in both the 'from_file' and 'bad_yaml' tests. This indicates either:
+       - The temp directory is not being recognized as the home directory within the test process.
+       - The directory is being dropped or removed before `AppConfig::load` is called.
+       - There may be platform-specific issues with how Rust and the OS handle temporary directories and environment variables in test contexts.
+
+    4. We have:
+       - Ensured that the temp dir and the `HOME` variable persist for the entire scope of the test (no early drops).
+       - Added debug output to print the value of `HOME`, whether the directory exists, and its contents immediately before calling `AppConfig::load`.
+       - Avoided all hardcoded paths or logic, per project rules.
+
+    5. The next step is to fix a compilation error in the debug output (caused by attempting to use `.unwrap_or_default()` on a `Result<Vec<PathBuf>, std::io::Error>`, which is not valid). The debug output will be adjusted to print either the directory contents or the error, as appropriate.
+
+    6. Once debug output is working, we will rerun the tests to:
+       - Confirm that the temp home directory exists and is accessible at the time of the config load.
+       - Confirm that the config file is present and readable.
+       - If the loader still returns `HomeDirNotFound`, we will further investigate how the loader resolves the home directory and if there are any platform-specific behaviors.
+
+    7. The overall goal is to:
+       - Ensure that `AppConfig::load` only returns `ConfigError::HomeDirNotFound` when `HOME` is truly unset or inaccessible.
+       - Ensure that if a config file exists but is malformed, `ConfigError::Yaml` is returned.
+       - Ensure that if a valid config file exists, its values are loaded and override defaults.
+       - Guarantee that all config tests are fully isolated and leave no side effects between runs.
+
+    8. **Recent changes include:**
+       - Removing all fallback logic to `dirs_next::home_dir` in favor of strictly using `std::env::var("HOME")` for home detection.
+       - Ensuring every test sets and cleans up its own `HOME` and config files.
+       - Refactoring test scoping to keep temp directories alive for the full test duration.
+       - Removing unused imports and warnings from the codebase.
+
+    9. **Next steps for resuming work:**
+       - Fix debug print compilation error in `test_load_config_from_file`.
+       - Rerun the test and analyze debug output.
+       - If the temp dir is present and accessible, but the loader still fails, investigate how the config loader is resolving the home path.
+       - Once the root cause is identified, make the minimal code changes needed to get all config tests green.
+       - Document all changes and update the README and roadmap as needed.
+
+    10. **General handoff context:**
+        - All work is being done in strict accordance with TDD, zero-warnings, and project isolation rules.
+        - No implementation code is being written before a failing test is confirmed.
+        - All config loader changes are being tracked in .windsurf/tasks.md and referenced in commit messages.
+        - All test and loader logic is being kept as minimal and idiomatic as possible, with no hardcoded logic or platform-specific hacks.
+        - The next session should begin by fixing the debug print, running the test, and continuing the TDD cycle until all config tests pass.
+
 
 ## Completed Tasks
 

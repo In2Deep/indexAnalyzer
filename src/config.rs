@@ -2,7 +2,7 @@
 //! loads ~/.indexer/config.yaml using serde_yaml
 
 use serde::Deserialize;
-use dirs_next::home_dir;
+
 use std::fs;
 use thiserror::Error;
 
@@ -23,21 +23,22 @@ impl Default for AppConfig {
 
 impl AppConfig {
     pub fn load() -> Result<Self, ConfigError> {
-        let home = std::env::var("HOME").ok().and_then(|h| Some(std::path::PathBuf::from(h))).or_else(home_dir);
+        let home = std::env::var("HOME").ok().map(std::path::PathBuf::from);
         let mut config_path = home.ok_or(ConfigError::HomeDirNotFound)?;
         config_path.push(".indexer");
         config_path.push("config.yaml");
         if config_path.exists() {
             let contents = fs::read_to_string(&config_path)?;
-            let yaml: AppConfig = match serde_yaml::from_str(&contents) {
-                Ok(cfg) => cfg,
-                Err(e) => return Err(ConfigError::Yaml(e)),
-            };
-            let default = AppConfig::default();
-            Ok(AppConfig {
-                redis_url: yaml.redis_url.or(default.redis_url),
-                log_level: yaml.log_level.or(default.log_level),
-            })
+            match serde_yaml::from_str::<AppConfig>(&contents) {
+                Ok(yaml) => {
+                    let default = AppConfig::default();
+                    Ok(AppConfig {
+                        redis_url: yaml.redis_url.or(default.redis_url),
+                        log_level: yaml.log_level.or(default.log_level),
+                    })
+                },
+                Err(e) => Err(ConfigError::Yaml(e)),
+            }
         } else {
             Ok(AppConfig::default())
         }
