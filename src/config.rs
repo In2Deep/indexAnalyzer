@@ -23,6 +23,7 @@ impl Default for AppConfig {
 
 impl AppConfig {
     pub fn load() -> Result<Self, ConfigError> {
+        
         let home = std::env::var("HOME").ok().map(std::path::PathBuf::from);
         let mut config_path = home.ok_or(ConfigError::HomeDirNotFound)?;
         config_path.push(".indexer");

@@ -1,4 +1,5 @@
 //! Tests for enhanced config system loading (TDD: Phase 2 - RED)
+//! NOTE: These tests modify environment variables and must be run with --test-threads=1.
 
 use indexer::config::{AppConfig, ConfigError};
 use std::fs;
@@ -28,9 +29,15 @@ fn test_load_config_from_file() {
     let config_dir = home.join(".indexer");
     let config_path = config_dir.join("config.yaml");
     fs::create_dir_all(&config_dir).unwrap();
-    println!("DEBUG: HOME={:?}", std::env::var("HOME"));
-    println!("DEBUG: home exists? {}", home.exists());
-    println!("DEBUG: home contents: {:?}", fs::read_dir(home).map(|rd| rd.map(|e| e.map(|e| e.path())).collect::<Result<Vec<_>,_>>()).unwrap_or_default());
+    
+    
+    match fs::read_dir(home) {
+        Ok(rd) => {
+            let paths: Vec<_> = rd.filter_map(|e| e.ok().map(|e| e.path())).collect();
+            
+        },
+        Err(_) => (),
+    }
     #[derive(serde::Serialize)]
     struct TestConfig<'a> {
         redis_url: &'a str,
@@ -41,7 +48,8 @@ fn test_load_config_from_file() {
         log_level: "debug",
     }).unwrap();
     fs::write(&config_path, yaml_struct).unwrap();
-    println!("DEBUG: config_path exists? {}", config_path.exists());
+    
+    
     let config = AppConfig::load().unwrap();
     assert_eq!(config.redis_url, Some("redis://custom:6379/1".to_string()));
     assert_eq!(config.log_level, Some("debug".to_string()));
