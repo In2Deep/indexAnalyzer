@@ -1,8 +1,28 @@
 //! Minimal RedisVectorStore struct and methods for TDD (dummy impl, no real Redis yet)
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_redis_vector_store_getters() {
+        let store = RedisVectorStore::new("redis://localhost", "prefix");
+        assert_eq!(store.redis_url(), "redis://localhost");
+        assert_eq!(store.key_prefix(), "prefix");
+    }
+}
 pub struct RedisVectorStore {
     redis_url: String,
     key_prefix: String,
+}
+
+impl RedisVectorStore {
+    pub fn redis_url(&self) -> &str {
+        &self.redis_url
+    }
+    pub fn key_prefix(&self) -> &str {
+        &self.key_prefix
+    }
+
 }
 
 impl RedisVectorStore {

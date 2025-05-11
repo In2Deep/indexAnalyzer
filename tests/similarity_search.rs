@@ -9,7 +9,7 @@ struct DummyVectorStore;
 impl VectorStore for DummyVectorStore {
     fn query_top_k(&self, _query: &[f32], k: usize) -> Vec<(&str, f32)> {
         // Dummy: always return k items
-        (0..k).map(|i| ("foo", 0.9)).collect()
+        (0..k).map(|_i| ("foo", 0.9)).collect()
     }
 }
 

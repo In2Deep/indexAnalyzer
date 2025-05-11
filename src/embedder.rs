@@ -9,6 +9,13 @@ pub struct OpenAIEmbedder {
 }
 
 impl OpenAIEmbedder {
+    pub fn api_key(&self) -> &str {
+        &self.api_key
+    }
+
+}
+
+impl OpenAIEmbedder {
     pub fn new_from_env() -> Result<Self, &'static str> {
         match std::env::var("OPENAI_API_KEY") {
             Ok(key) => Ok(Self { api_key: key }),
@@ -29,6 +36,13 @@ pub struct HFEmbedder {
 }
 
 impl HFEmbedder {
+    pub fn api_key(&self) -> &str {
+        &self.api_key
+    }
+
+}
+
+impl HFEmbedder {
     pub fn new_from_env() -> Result<Self, &'static str> {
         match std::env::var("HF_API_KEY") {
             Ok(key) => Ok(Self { api_key: key }),
@@ -45,6 +59,17 @@ impl Embedder for HFEmbedder {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn test_openai_api_key_getter() {
+        let embedder = OpenAIEmbedder { api_key: "testkey".to_string() };
+        assert_eq!(embedder.api_key(), "testkey");
+    }
+    #[test]
+    fn test_hf_api_key_getter() {
+        let embedder = HFEmbedder { api_key: "testkey2".to_string() };
+        assert_eq!(embedder.api_key(), "testkey2");
+    }
+
     use super::*;
     struct MockEmbedder;
     impl Embedder for MockEmbedder {
