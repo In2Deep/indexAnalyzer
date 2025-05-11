@@ -34,6 +34,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::Recall { ref project_name, .. } => (format!("code_index:{}", project_name), args.command),
         Commands::Status { ref name } => (format!("code_index:{}", name), args.command),
         Commands::Forget { ref name } => (format!("code_index:{}", name), args.command),
+        Commands::Vectorize { ref name, .. } => (format!("code_index:{}", name), args.command),
     };
     // Setup logging
     setup_logging(&config)?;
@@ -96,6 +97,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let files: Vec<String> = redis.smembers(format!("{}:file_index", key_prefix)).await.unwrap_or_default();
             clear_file_data(&redis, &key_prefix, &files).await?;
             info!("Cleared all indexed data");
+        }
+        Commands::Vectorize { .. } => {
+            todo!("Vectorize subcommand logic not yet implemented (TDD: placeholder)");
         }
     }
     Ok(())

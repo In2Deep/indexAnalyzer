@@ -49,4 +49,21 @@ pub enum Commands {
         #[arg(long = "name", alias = "project-name")]
         name: String,
     },
+    /// batch-generate embeddings for code entities
+    Vectorize {
+        #[arg(long = "name", alias = "project-name")]
+        name: String,
+        #[arg(long = "path")]
+        path: String,
+        #[arg(long = "provider")]
+        provider: Option<String>,
+        #[arg(long = "db")]
+        db: Option<String>,
+        #[arg(long = "batch-size")]
+        batch_size: Option<usize>,
+        #[arg(long = "dry-run")]
+        dry_run: bool,
+        #[arg(long = "verbose")]
+        verbose: bool,
+    },
 }

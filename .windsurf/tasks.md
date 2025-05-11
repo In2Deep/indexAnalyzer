@@ -12,9 +12,9 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 ## Vectoring Upgrade (TDD-Driven)
 
 ### CLI & Configuration
-- [ ] TDD: `vectorize` subcommand structure
-  - **Test Spec:** Parsing/validation of required args (`--name`, `--path`), optional overrides (`--provider`, `--db`, `--batch-size`), and utility flags (`--dry-run`, `--verbose`).
-  - **Test Spec:** Defaults/overrides logic from config.yaml.
+- [x] TDD: vectorize subcommand parses mandatory args (`--name`, `--path`). (R-G-R complete, test: test_vectorize_parsing_mandatory_args)
+- [ ] TDD: vectorize subcommand parses optional override arg (`--provider`).
+  - **Test Spec:** Parsing/validation of --provider when present and absent; value is Some(str) if given, None if omitted. 
 - [ ] TDD: `vector-recall` subcommand structure
   - **Test Spec:** Parsing/validation of required args (`--name`, `--query`), optional overrides (`--provider`, `--db`, `--top-k`), and utility flag (`--json`).
   - **Test Spec:** Defaults/overrides logic from config.yaml.
