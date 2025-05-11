@@ -199,6 +199,15 @@ All usage and examples below refer to the Rust implementation only.
 
 ## Development
 
+## Coverage
+Code coverage is enforced via GitHub Actions CI. To check coverage locally:
+
+1. Run `cargo tarpaulin --out Html` in the project root.
+2. Open `tarpaulin-report.html` in your browser to see detailed coverage results.
+
+On every push and pull request, CI will automatically run tests and generate a coverage report. The build will fail if the report is not generated. See `.github/workflows/ci.yml` for workflow details.
+
+
 ### TDD Progress (2025-05-10)
 - All new features, including `vectorize` and vector search, are implemented via strict Red-Green-Refactor TDD cycles.
 - **CLI parsing for `vectorize`** (mandatory/optional args) is fully tested and stable (see `tests/cli_vectorize.rs`).
