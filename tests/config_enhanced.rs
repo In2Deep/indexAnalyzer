@@ -50,12 +50,13 @@ fn test_load_config_from_file() {
     fs::write(&config_path, yaml_struct).unwrap();
     
     
+    println!("TEST DEBUG: $HOME before load = {:?}", std::env::var("HOME"));
     let config = AppConfig::load().unwrap();
     assert_eq!(config.redis_url, Some("redis://custom:6379/1".to_string()));
     assert_eq!(config.log_level, Some("debug".to_string()));
-    std::env::remove_var("HOME");
     let _ = fs::remove_file(&config_path);
     temp_dir.close().unwrap();
+    std::env::remove_var("HOME");
 }
 
 #[test]
@@ -82,12 +83,13 @@ fn test_load_config_bad_yaml() {
     fs::create_dir_all(&config_dir).unwrap();
     fs::write(&config_path, "this is not yaml: [").unwrap();
     assert!(config_path.exists(), "config.yaml was not written");
+    println!("TEST DEBUG: $HOME before load = {:?}", std::env::var("HOME"));
     let result = AppConfig::load();
     match result {
         Err(ConfigError::Yaml(_)) => {},
         other => panic!("Expected ConfigError::Yaml(_), got: {:?}", other),
     }
-    std::env::remove_var("HOME");
     let _ = fs::remove_file(&config_path);
     temp_dir.close().unwrap();
+    std::env::remove_var("HOME");
 }

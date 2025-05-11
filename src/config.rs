@@ -99,6 +99,7 @@ impl AppConfig {
     pub fn load() -> Result<Self, ConfigError> {
         
         let home = std::env::var("HOME").ok().map(std::path::PathBuf::from);
+    println!("APP DEBUG: $HOME in loader = {:?}", std::env::var("HOME"));
         let mut config_path = home.ok_or(ConfigError::HomeDirNotFound)?;
         config_path.push(".indexer");
         config_path.push("config.yaml");
