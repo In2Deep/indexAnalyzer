@@ -33,7 +33,7 @@ fn test_load_config_from_file() {
     
     match fs::read_dir(home) {
         Ok(rd) => {
-            let paths: Vec<_> = rd.filter_map(|e| e.ok().map(|e| e.path())).collect();
+            let _ = rd.filter_map(|e| e.ok().map(|e| e.path())).collect::<Vec<_>>();
             
         },
         Err(_) => (),

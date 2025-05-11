@@ -2,21 +2,47 @@
 //! loads ~/.indexer/config.yaml using serde_yaml
 
 use serde::Deserialize;
-
 use std::fs;
 use thiserror::Error;
 
-#[derive(Debug, Deserialize, Clone)]
+use std::collections::HashMap;
+
+/// Global defaults for the indexer
+#[derive(Debug, Deserialize)]
+pub struct GlobalDefaults {
+    pub provider: String,
+    pub db: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ProviderConfig {
+    pub api_key: String,
+    pub model: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct VectorDbConfig {
+    pub url: String,
+    pub key_prefix: String,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct AppConfig {
     pub redis_url: Option<String>,
     pub log_level: Option<String>,
+    pub global_defaults: Option<GlobalDefaults>,
+    pub providers: Option<HashMap<String, ProviderConfig>>,
+    pub vector_dbs: Option<HashMap<String, VectorDbConfig>>,
 }
 
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
-            redis_url: Some("redis://127.0.0.1:6379/0".to_string()),
-            log_level: Some("info".to_string()),
+            redis_url: None,
+            log_level: None,
+            global_defaults: None,
+            providers: None,
+            vector_dbs: None,
         }
     }
 }
@@ -36,6 +62,9 @@ impl AppConfig {
                     Ok(AppConfig {
                         redis_url: yaml.redis_url.or(default.redis_url),
                         log_level: yaml.log_level.or(default.log_level),
+                        global_defaults: yaml.global_defaults.or(default.global_defaults),
+                        providers: yaml.providers.or(default.providers),
+                        vector_dbs: yaml.vector_dbs.or(default.vector_dbs),
                     })
                 },
                 Err(e) => Err(ConfigError::Yaml(e)),
