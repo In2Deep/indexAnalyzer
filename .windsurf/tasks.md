@@ -12,6 +12,18 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 - [x] TDD: Enhanced config system loading (global defaults, providers, vector DBs, env API keys)
     - Loader and test implemented, all config fields parsed and validated. See src/config.rs, tests/config_enhanced_system.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
+- [x] Refactor: Config precedence and project context resolution
+    - Loader supports CLI > env > local .indexer/config.yaml > global ~/.indexer/config.yaml, with merging and clear error handling. See src/config.rs, README.md, docs/roadmap.md.
+
+- [x] Feature: Config versioning and migration safety
+    - All configs require a version field; loader checks and errors on missing/outdated versions. Test coverage for version compatibility and migration notes. See src/config.rs, README.md, docs/roadmap.md.
+
+- [x] Diagnostics: Debug and troubleshooting commands
+    - Implemented `idx config print` for effective config/source debugging. All config errors (missing, malformed, missing keys, bad version) are logged with actionable messages. See README.md, docs/roadmap.md.
+
+- [x] Documentation: Update for new config structure, versioning, and troubleshooting
+    - All documentation (README.md, docs/roadmap.md, docs/configuration.md) updated for config precedence, merging, versioning, error handling, and OpenRouter support.
+
 - [x] TDD: CLI documentation and README update after TDD cycles complete
     - CLI docs and README updated, all CLI/config/test cycles documented. See README.md, docs/README.md, commit <COMMIT_HASH_PLACEHOLDER>.
 
@@ -102,6 +114,17 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 ---
 
 ## Completed Tasks
+
+---
+
+## TDD & Development Methodology Notes (Synced from README)
+
+- All new features, refactors, and code changes are developed using strict TDD: RED test, GREEN code, refactor, document, repeat.
+- OpenRouter is fully supported as an embedding provider alongside OpenAI and Hugging Face.
+- Output formatting (`--json` flag, human-readable default) and logging for all embedding/vector DB operations are implemented and tested.
+- All TDD task status and feature progress are tracked here and in `docs/roadmap.md`.
+- See also: `docs/roadmap_part1.md`, `docs/roadmap_part2.md`, `docs/roadmap_part3.md` for implementation details.
+- Do not overwrite or remove open tasks (e.g., CLI `--name` global flag refactor) or any ongoing work—continue from the current state after resolving any bugs or blockers.
 
 - Fix line number extraction in src/ast_parser.rs to use real AST node locations for all entities (function, class, assignment). Add tests and follow all workflows. (commit d4d9958)
 

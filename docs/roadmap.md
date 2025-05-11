@@ -50,8 +50,15 @@ Overarching Process Note: Each item below represents a feature or a set of relat
     -   All CLI parsing/validation for vectorize is implemented and tested (see tests/cli_vectorize.rs).
 -   Feature: vector-recall subcommand structure and argument parsing. **[COMPLETE]**
     -   CLI parsing/validation for vector-recall is implemented and tested (see tests/cli_vector_recall.rs).
--   Feature: Enhanced Configuration System based on ~/.indexer/config.yaml. **[COMPLETE]**
-    -   Loader and validation for global defaults/providers/vector DBs are implemented (see src/config.rs).
+-   Feature: Enhanced Configuration System with Precedence and Versioning. **[COMPLETE]**
+    -   Loader supports config precedence: CLI > env > local config > global config.
+    -   Local `.indexer/config.yaml` overrides global `~/.indexer/config.yaml` for project context.
+    -   All configs require a `version` field; loader checks and errors on missing/outdated versions.
+    -   Configs are merged, with missing keys triggering actionable errors.
+    -   OpenRouter is supported alongside OpenAI and Hugging Face.
+    -   Debug command (`idx config print`) shows effective config and sources.
+    -   Error handling covers missing configs, parse errors, bad values, and version mismatches.
+    -   See README.md and docs/configuration.md for schema and troubleshooting.
 -   Task: Update CLI docs and README following /documentation-workflow after TDD cycles complete for CLI structure and configuration system. **[COMPLETE]**
     -   See README.md, docs/README.md, commit <COMMIT_HASH_PLACEHOLDER>.
 

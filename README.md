@@ -124,26 +124,60 @@ Vector-based indexing and search are now supported via two subcommands:
 
 ---
 
-### Configuration for Vector Features
-All configuration is loaded from `~/.indexer/config.yaml`.
+### Configuration & Project Context Resolution
 
-Example vector config:
+Configuration is loaded in the following priority:
+1. CLI flags (e.g., `--name`, `--model`)
+2. Environment variables (e.g., `INDEXER_PROJECT_NAME`, `OPENAI_API_KEY`)
+3. Local config: `.indexer/config.yaml` in the current or parent directory
+4. Global config: `~/.indexer/config.yaml`
+
+Configs are merged: local overrides global, CLI/env override both. This enables zero-flag workflows per project, ideal for LLMs, scripts, and aliases.
+
+#### Config Versioning
+- Every config file must include a `version` field (e.g., `version: 1.0`).
+- The loader checks this and errors if outdated or missing, with upgrade instructions.
+
+#### Example config.yaml
 ```yaml
+version: 1.0
 redis_url: "redis://127.0.0.1:6379/0"
 log_level: "info"
 global_defaults:
   provider: "openai"
   db: "redis"
+  batch_size: 100
+  top_k: 5
 providers:
   openai:
     api_key: "${OPENAI_API_KEY}"
     model: "text-embedding-ada-002"
+  huggingface:
+    api_key: "${HF_API_KEY}"
+    model: "sentence-transformers/all-MiniLM-L6-v2"
+  openrouter:
+    api_key: "${OPENROUTER_API_KEY}"
+    model: "openrouter/embedding-model"
 vector_dbs:
   redis:
     url: "redis://127.0.0.1:6379/0"
     key_prefix: "code:myproject"
 ```
-See `docs/configuration.md` for all options.
+
+#### Debugging & Diagnostics
+- Use `idx config print` to see the effective config and its sources.
+- All errors (missing config, parse errors, missing keys, bad version, etc.) are logged with actionable messages.
+
+#### Error Handling & Troubleshooting
+- Loader fails fast if config is missing, malformed, or version is wrong.
+- Missing keys after merging trigger clear errors.
+- Environment variable substitution is required for secrets.
+- See `docs/roadmap.md` for migration/versioning details.
+
+#### Supported Providers
+- OpenAI, Hugging Face, OpenRouter are all supported and documented.
+
+See `docs/configuration.md` for all options and advanced usage.
 
 ---
 
@@ -175,6 +209,10 @@ All usage and examples below refer to the Rust implementation only.
 - See `docs/roadmap_part1.md`, `docs/roadmap_part2.md`, `docs/roadmap_part3.md` for feature and implementation details.
 - See `docs/dependency_setup.md` for dependency requirements.
 - All configuration is YAML-based (see above).
+
+- **Supported embedding providers:** OpenAI, Hugging Face, and OpenRouter are fully supported and documented in config examples and implementation.
+
+- **Development methodology:** All future refactoring and new code generation will continue using the same strict, effective TDD (Test-Driven Development) methods as established throughout this project. Every new feature or change will be driven by tests first, ensuring reliability and maintainability.
 
 ---
 
