@@ -1,6 +1,6 @@
 //! RED tests for vector indexing workflow (entity extraction, embedding, storage, batch)
 
-use indexer::vector_store::RedisVectorStore;
+use indexer::vector_store::{RedisVectorStore, VectorStore};
 use indexer::embedder::{Embedder, MockEmbedder};
 use indexer::ast_parser::extract_code_info;
 use tempfile::tempdir;
@@ -32,11 +32,14 @@ fn test_embedding_generation_for_entities() {
 
 #[test]
 fn test_store_embeddings_with_metadata() {
-    // Dummy RedisVectorStore, no actual Redis connection needed for red test
+    // For the test, we'll use the trait implementation which is synchronous
+    // This allows us to test without async/await
     let store = RedisVectorStore::new("redis://localhost:6379/0", "test_prefix");
     let embedding = vec![1.0, 2.0, 3.0];
     let entity_id = "entity1";
-    let result = store.upsert_embedding(entity_id, &embedding, Some("file.py"), Some("function"));
+    
+    // Use the trait method which returns a synchronous Result
+    let result = VectorStore::upsert_embedding(&store, entity_id, &embedding, Some("file.py"), Some("function"));
     assert!(result.is_ok(), "Should store embedding without error");
 }
 

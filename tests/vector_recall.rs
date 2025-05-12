@@ -1,6 +1,6 @@
 //! RED tests for vector recall/search workflow
 
-use indexer::vector_store::RedisVectorStore;
+use indexer::vector_store::{RedisVectorStore, VectorStore};
 use serde_json;
 
 #[test]
@@ -8,7 +8,9 @@ fn test_similarity_search_returns_top_k_matches() {
     let store = RedisVectorStore::new("redis://localhost:6379/0", "test_prefix");
     let query_vec = vec![1.0, 2.0, 3.0];
     let top_k = 3;
-    let results = store.similarity_search(&query_vec, top_k);
+    
+    // Use the trait method which returns a synchronous result
+    let results = VectorStore::similarity_search(&store, &query_vec, top_k);
     assert_eq!(results.len(), top_k, "Should return exactly top_k matches");
 }
 
