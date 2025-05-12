@@ -212,7 +212,7 @@ impl RedisVectorStore {
 }
 
 impl VectorStore for RedisVectorStore {
-    fn upsert_embedding(&self, entity_id: &str, embedding: &[f32], _file: Option<&str>, _entity_type: Option<&str>) -> Result<(), String> {
+    fn upsert_embedding(&self, entity_id: &str, _embedding: &[f32], _file: Option<&str>, _entity_type: Option<&str>) -> Result<(), String> {
         log::info!("VectorStore trait upsert_embedding called for {}", entity_id);
         
         // For testing purposes, we'll always return Ok(())
