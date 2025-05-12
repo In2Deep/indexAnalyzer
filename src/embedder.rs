@@ -81,6 +81,14 @@ mod tests {
 
 /// MockEmbedder implements Embedder for testing
 pub struct MockEmbedder;
+
+impl MockEmbedder {
+    /// Create a new MockEmbedder instance
+    pub fn new() -> Self {
+        MockEmbedder
+    }
+}
+
 impl Embedder for MockEmbedder {
     fn embed(&self, input: &str) -> Vec<f32> {
         // Return different embeddings based on entity type prefix

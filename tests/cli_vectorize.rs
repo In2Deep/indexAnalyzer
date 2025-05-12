@@ -16,11 +16,7 @@ fn test_vectorize_parsing_mandatory_args() {
     ];
     let cli = CliArgs::parse_from(args);
     match cli.command {
-        Commands::Vectorize { name, path, provider, db, batch_size, dry_run, verbose }
-
-
-
- => {
+        Commands::Vectorize { name, path, provider, db, batch_size, dry_run, verbose } => {
             assert_eq!(name, "my_project");
             assert_eq!(path, "./src");
             assert!(provider.is_none());
@@ -29,16 +25,8 @@ fn test_vectorize_parsing_mandatory_args() {
             assert!(!dry_run);
             assert!(!verbose);
         }
-
-
-
-
         _ => panic!("Expected vectorize subcommand to be parsed"),
     }
-
-
-
-
 }
 
 

@@ -132,6 +132,14 @@ Will proceed with strict adherence to TDD workflow, zero-warnings policy, and al
 - [ ] TDD: Classic/vector data coexistence (test key isolation, no mixing/overwrites).
 - [ ] TDD: Document migration instructions if schema changes are required.
 
+### CLI Implementation
+- [ ] TDD: Implement vectorize command functionality to replace placeholder
+  - Test cases: 
+    - Function: `vectorize_command` in `src/main.rs`
+    - Input: CLI arguments for project name, path, provider, and other options
+    - Expected output: Successful extraction, embedding generation, and storage of vectors
+    - Success criteria: Command executes without errors, vectors are stored in Redis, and appropriate logging occurs
+
 ### Testing & Documentation
 - [ ] TDD: Coverage tracking, placeholder tests for unimplemented behaviors.
 - [ ] TDD: Update all docs and usage examples after each TDD cycle.
