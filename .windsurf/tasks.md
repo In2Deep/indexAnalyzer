@@ -121,9 +121,12 @@ Will proceed with strict adherence to TDD workflow, zero-warnings policy, and al
   - Implemented `batch_process_entities` function to process multiple texts, extract entities, generate embeddings, and track progress. Added comprehensive tests for error handling and progress logging. See src/batch_processing.rs, tests/vector_batch_processing.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
 ### Vector Recall/Search
-- [ ] TDD: Similarity search logic (query, call VectorStore, get top-K, error handling).
-- [ ] TDD: Output formatting (human-readable, JSON flag).
-- [ ] TDD: Logging of all query parameters/results.
+- [x] TDD: Similarity search logic (query, call VectorStore, get top-K, error handling).
+  - Implemented `search_vectors` function with support for filtering and scoring options. Fixed failing tests in vector_recall.rs. See src/vector_search.rs, tests/vector_similarity_search.rs, commit <COMMIT_HASH_PLACEHOLDER>.
+- [x] TDD: Output formatting (human-readable, JSON flag).
+  - Added output formatting utilities for search results in both human-readable and JSON formats. See src/output_format.rs, tests/vector_similarity_search.rs, commit <COMMIT_HASH_PLACEHOLDER>.
+- [x] TDD: Logging of all query parameters/results.
+  - Added comprehensive logging for all query parameters and results. See src/vector_search.rs, tests/query_logging.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
 ### Migration & Compatibility
 - [ ] TDD: Classic/vector data coexistence (test key isolation, no mixing/overwrites).

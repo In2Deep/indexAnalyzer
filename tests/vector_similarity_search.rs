@@ -1,10 +1,9 @@
 //! RED tests for vector similarity search with more comprehensive requirements
 //! Tests similarity search, scoring, filtering, and result formatting
 
-use indexer::vector_store::{RedisVectorStore, VectorStore};
+use indexer::vector_store::RedisVectorStore;
 use indexer::vector_search::{search_vectors, SearchResult, SearchOptions};
 use indexer::output_format::{format_search_results, OutputFormat};
-use serde_json;
 use std::collections::HashMap;
 
 #[test]
