@@ -82,7 +82,19 @@ mod tests {
 /// MockEmbedder implements Embedder for testing
 pub struct MockEmbedder;
 impl Embedder for MockEmbedder {
-    fn embed(&self, _input: &str) -> Vec<f32> {
-        vec![0.0, 1.0, 2.0]
+    fn embed(&self, input: &str) -> Vec<f32> {
+        // Return different embeddings based on entity type prefix
+        if input.starts_with("class") {
+            vec![1.0, 0.0, 0.0]
+        } else if input.starts_with("fn") {
+            vec![0.0, 1.0, 0.0]
+        } else if input.starts_with("var") {
+            vec![0.0, 0.0, 1.0]
+        } else if input.starts_with("doc") {
+            vec![1.0, 1.0, 0.0]
+        } else {
+            // Default embedding for unknown entity types
+            vec![0.0, 1.0, 2.0]
+        }
     }
 }
