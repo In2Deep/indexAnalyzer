@@ -57,70 +57,84 @@ impl Embedder for UnreliableEmbedder {
         // Record the embedding call
         self.embed_calls.lock().unwrap().push(input.to_string());
         
-        // Simulate memory allocation
-        {
-            let mut memory = self.memory_usage.lock().unwrap();
-            *memory += input.len();
-            
-            // Check if we've exceeded max memory
-            if *memory > self.max_memory {
-                // Record failure
-                self.failures.lock().unwrap().push(format!("Memory limit exceeded for {}", input));
+        // Use std::panic::catch_unwind to handle panics
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            // Simulate memory allocation
+            {
+                let mut memory = self.memory_usage.lock().unwrap();
+                *memory += input.len();
                 
-                // Simulate OOM
-                panic!("Out of memory (simulated)");
+                // Check if we've exceeded max memory
+                if *memory > self.max_memory {
+                    // Record failure
+                    self.failures.lock().unwrap().push(format!("Memory limit exceeded for {}", input));
+                    
+                    // Simulate OOM
+                    panic!("Out of memory (simulated)");
+                }
             }
-        }
-        
-        // Check if this should timeout
-        // Use deterministic approach instead of random
-let should_timeout = self.embed_calls.lock().unwrap().len() % 5 == 0 && self.timeout_frequency > 0.0;
-if should_timeout {
-            // Track retry count
-            let retry_key = input.to_string();
-            let current_retries = {
-                let mut retries = self.retry_count.lock().unwrap();
-                let count = retries.entry(retry_key.clone()).or_insert(0);
-                *count += 1;
-                *count
-            };
             
-            // If we've exceeded max retries, fail permanently
-            if current_retries > self.max_retries {
-                // Record failure
-                self.failures.lock().unwrap().push(format!("Max retries exceeded for {}", input));
+            // Check if this should timeout
+            // Use deterministic approach instead of random
+            let should_timeout = self.embed_calls.lock().unwrap().len() % 5 == 0 && self.timeout_frequency > 0.0;
+            if should_timeout {
+                // Track retry count
+                let retry_key = input.to_string();
+                let current_retries = {
+                    let mut retries = self.retry_count.lock().unwrap();
+                    let count = retries.entry(retry_key.clone()).or_insert(0);
+                    *count += 1;
+                    *count
+                };
                 
-                panic!("Network timeout after max retries (simulated)");
+                // If we've exceeded max retries, fail permanently
+                if current_retries > self.max_retries {
+                    // Record failure
+                    self.failures.lock().unwrap().push(format!("Max retries exceeded for {}", input));
+                    
+                    panic!("Network timeout after max retries (simulated)");
+                }
+                
+                // Simulate timeout
+                thread::sleep(Duration::from_millis(100));
+                panic!("Network timeout (simulated)");
             }
             
-            // Simulate timeout
-            thread::sleep(Duration::from_millis(100));
-            panic!("Network timeout (simulated)");
-        }
-        
-        // Check if this should return corrupted data
-        // Use deterministic approach instead of random
-let should_corrupt = self.embed_calls.lock().unwrap().len() % 7 == 0 && self.corruption_frequency > 0.0;
-if should_corrupt {
-            // Record failure
-            self.failures.lock().unwrap().push(format!("Corrupted response for {}", input));
+            // Check if this should return corrupted data
+            // Use deterministic approach instead of random
+            let should_corrupt = self.embed_calls.lock().unwrap().len() % 7 == 0 && self.corruption_frequency > 0.0;
+            if should_corrupt {
+                // Record failure
+                self.failures.lock().unwrap().push(format!("Corrupted response for {}", input));
+                
+                // Return corrupted embedding (all zeros)
+                return vec![0.0; 3];
+            }
             
-            // Return corrupted embedding (all zeros)
-            return vec![0.0; 3];
-        }
+            // Free some memory
+            {
+                let mut memory = self.memory_usage.lock().unwrap();
+                if *memory > input.len() {
+                    *memory -= input.len();
+                } else {
+                    *memory = 0;
+                }
+            }
+            
+            // Return valid embedding
+            vec![0.1, 0.2, 0.3]
+        }));
         
-        // Free some memory
-        {
-            let mut memory = self.memory_usage.lock().unwrap();
-            if *memory > input.len() {
-                *memory -= input.len();
-            } else {
-                *memory = 0;
+        match result {
+            Ok(embedding) => embedding,
+            Err(_) => {
+                // Record failure
+                self.failures.lock().unwrap().push(format!("Panic during embedding of {}", input));
+                
+                // Return empty embedding on panic
+                vec![0.0, 0.0, 0.0]
             }
         }
-        
-        // Return valid embedding
-        vec![0.1, 0.2, 0.3]
     }
 }
 
@@ -155,6 +169,7 @@ impl UnreliableVectorStore {
         }
     }
     
+    #[allow(dead_code)]
     fn get_stored_count(&self) -> usize {
         match self.stored_entities.read() {
             Ok(entities) => entities.len(),
@@ -166,6 +181,7 @@ impl UnreliableVectorStore {
         self.store_calls.lock().unwrap().clone()
     }
     
+    #[allow(dead_code)]
     fn get_query_calls(&self) -> Vec<String> {
         self.query_calls.lock().unwrap().clone()
     }
@@ -200,10 +216,11 @@ if should_partition {
                 // Use deterministic approach instead of random
                 let should_race = self.store_calls.lock().unwrap().len() % 8 == 0 && self.race_condition_frequency > 0.0;
                 if should_race {
-                // Record failure
-                self.failures.lock().unwrap().push(format!("Race condition during store of {}", entity_id));
-                
-                return Err("Race condition detected (simulated)".to_string());
+                    // Record failure
+                    self.failures.lock().unwrap().push(format!("Race condition during store of {}", entity_id));
+                    
+                    return Err("Race condition detected (simulated)".to_string());
+                }
             }
             
             *last_op = now;

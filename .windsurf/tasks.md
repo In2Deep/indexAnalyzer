@@ -142,6 +142,8 @@ Will proceed with strict adherence to TDD workflow, zero-warnings policy, and al
   - Implemented `vectorize_command` function with proper handling of dry run mode, batch processing, and error handling. Added comprehensive tests in tests/vectorize_command.rs that verify both normal operation and dry run mode. All tests pass with zero warnings.
 
 ### Testing & Documentation
+- [x] TDD: Fix vector store mock tests to ensure proper key prefixing and isolation
+  - Fixed issues with the `MockVectorStore` implementation in tests/vector_store_mock.rs to ensure proper key prefixing and project isolation. Added comprehensive tests for similarity search and large batch operations. All tests now pass with zero warnings. (Completed on 2025-05-11)
 - [ ] TDD: Coverage tracking, placeholder tests for unimplemented behaviors.
 - [ ] TDD: Update all docs and usage examples after each TDD cycle.
 
