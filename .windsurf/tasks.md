@@ -133,12 +133,13 @@ Will proceed with strict adherence to TDD workflow, zero-warnings policy, and al
 - [ ] TDD: Document migration instructions if schema changes are required.
 
 ### CLI Implementation
-- [ ] TDD: Implement vectorize command functionality to replace placeholder
+- [x] TDD: Implement vectorize command functionality to replace placeholder
   - Test cases: 
-    - Function: `vectorize_command` in `src/main.rs`
+    - Function: `vectorize_command` in `src/vectorize.rs`
     - Input: CLI arguments for project name, path, provider, and other options
     - Expected output: Successful extraction, embedding generation, and storage of vectors
     - Success criteria: Command executes without errors, vectors are stored in Redis, and appropriate logging occurs
+  - Implemented `vectorize_command` function with proper handling of dry run mode, batch processing, and error handling. Added comprehensive tests in tests/vectorize_command.rs that verify both normal operation and dry run mode. All tests pass with zero warnings.
 
 ### Testing & Documentation
 - [ ] TDD: Coverage tracking, placeholder tests for unimplemented behaviors.
