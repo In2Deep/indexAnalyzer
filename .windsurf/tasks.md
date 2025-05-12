@@ -117,7 +117,8 @@ Will proceed with strict adherence to TDD workflow, zero-warnings policy, and al
   - Implemented `extract_entities` function to parse Python and Rust code and extract functions, classes, variables, and docstrings for vectorization. See src/extract_entities.rs, tests/vector_entity_extraction.rs, commit 724575e.
 - [x] TDD: Embedding generation for extracted entities (call Embedder, receive vectors, error handling).
   - Enhanced `MockEmbedder` to generate different embeddings based on entity type (class, function, variable, docstring). Added comprehensive tests for error handling and batch processing. See src/embedder.rs, tests/embedding_generation.rs, commit <COMMIT_HASH_PLACEHOLDER>.
-- [ ] TDD: Batch processing and progress logging.
+- [x] TDD: Batch processing and progress logging.
+  - Implemented `batch_process_entities` function to process multiple texts, extract entities, generate embeddings, and track progress. Added comprehensive tests for error handling and progress logging. See src/batch_processing.rs, tests/vector_batch_processing.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
 ### Vector Recall/Search
 - [ ] TDD: Similarity search logic (query, call VectorStore, get top-K, error handling).

@@ -10,3 +10,5 @@ pub mod logging;
 pub mod redis_ops;
 pub mod file_processing;
 pub mod ast_parser;
+pub mod batch_processing;
+pub use batch_processing::batch_process_entities;
