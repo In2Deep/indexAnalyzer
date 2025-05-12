@@ -1,6 +1,11 @@
 # Roadmap: Vectoring Upgrade for Code Indexer (TDD-Driven)
 
 ## 1. Objectives
+
+---
+**SESSION NOTE (2025-05-11 5:50pm PDT, West Coast):**
+Vector CLI structure and config are complete, but all core vector logic (embedding, storage, recall) is NOT implemented. RED tests exist for all vector features. Next session must proceed GREEN, implementing vector logic and passing tests stepwise.
+---
 - Add robust vector-based indexing and search to the code indexer, supporting code entity embeddings and similarity queries.
 - Maintain strict separation between classic and vector workflows—no cross-contamination of logic or keys.
 - Preserve and document all existing CLI functionality and workflows.
