@@ -95,11 +95,12 @@ impl Default for AppConfig {
     }
 }
 
+
 impl AppConfig {
     pub fn load() -> Result<Self, ConfigError> {
         
         let home = std::env::var("HOME").ok().map(std::path::PathBuf::from);
-    println!("APP DEBUG: $HOME in loader = {:?}", std::env::var("HOME"));
+    log::debug!("$HOME in loader = {:?}", std::env::var("HOME"));
         let mut config_path = home.ok_or(ConfigError::HomeDirNotFound)?;
         config_path.push(".indexer");
         config_path.push("config.yaml");
@@ -109,14 +110,14 @@ impl AppConfig {
                 Ok(yaml) => {
                         // Access all config fields to avoid dead code warnings
                         if let Some(ref gd) = yaml.global_defaults {
-                            println!("Loaded global_defaults: provider={}, db={}", gd.provider, gd.db);
+                            log::debug!("Loaded global_defaults: provider={}, db={}", gd.provider, gd.db);
                             // Call getters to ensure they are used
                             let _ = gd.provider();
                             let _ = gd.db();
                         }
                         if let Some(ref providers) = yaml.providers {
                             for (k, v) in providers {
-                                println!("Provider {}: api_key={}, model={}", k, v.api_key, v.model);
+                                 log::debug!("Provider {}: model={}", k, v.model);
                                 // Call getters to ensure they are used
                                 let _ = v.api_key();
                                 let _ = v.model();
@@ -124,7 +125,7 @@ impl AppConfig {
                         }
                         if let Some(ref vdbs) = yaml.vector_dbs {
                             for (k, v) in vdbs {
-                                println!("VectorDb {}: url={}, key_prefix={}", k, v.url, v.key_prefix);
+                                log::debug!("VectorDb {}: url={}, key_prefix={}", k, v.url, v.key_prefix);
                                 // Call getters to ensure they are used
                                 let _ = v.url();
                                 let _ = v.key_prefix();
@@ -140,7 +141,7 @@ impl AppConfig {
                     })
                 },
                 Err(e) => {
-                    println!("APP DEBUG: YAML parse error: {}", e);
+                    log::debug!("YAML parse error: {}", e);
                     Err(ConfigError::Yaml(e))
                 },
             }
