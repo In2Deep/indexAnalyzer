@@ -12,3 +12,5 @@ pub mod file_processing;
 pub mod ast_parser;
 pub mod batch_processing;
 pub use batch_processing::batch_process_entities;
+pub mod vector_search;
+pub use vector_search::{search_vectors, SearchResult, SearchOptions};

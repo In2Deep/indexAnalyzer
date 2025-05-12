@@ -41,6 +41,16 @@ fn test_store_embeddings_with_metadata() {
     // Use the trait method which returns a synchronous Result
     let result = VectorStore::upsert_embedding(&store, entity_id, &embedding, Some("file.py"), Some("function"));
     assert!(result.is_ok(), "Should store embedding without error");
+    
+    // Verify we can get the entity metadata
+    let metadata_result = VectorStore::get_entity_metadata(&store, entity_id);
+    assert!(metadata_result.is_ok(), "Should retrieve metadata without error");
+    
+    if let Ok(metadata) = metadata_result {
+        assert_eq!(metadata.get("id").unwrap(), entity_id, "Entity ID should match");
+        assert_eq!(metadata.get("type").unwrap(), "function", "Entity type should match");
+        assert!(metadata.contains_key("file"), "Metadata should include file information");
+    }
 }
 
 #[test]
