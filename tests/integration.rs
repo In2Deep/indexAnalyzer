@@ -46,7 +46,7 @@ async fn test_store_and_query_entities() {
     };
     store_code_entities(&redis, key_prefix, &[entity.clone()]).await.unwrap();
     let result = query_code_entity(&redis, key_prefix, "function", Some("foo")).await.unwrap();
-    println!("DEBUG: query_code_entity result: {:?}", result);
+
     assert!(result.iter().any(|e| e.name == "foo"), "Expected entity 'foo' not found, got: {:?}", result);
     // Cleanup
     clear_file_data(&redis, key_prefix, &["foo/bar.py".to_string()]).await.unwrap();

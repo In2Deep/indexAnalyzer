@@ -51,8 +51,8 @@ impl RedisVectorStore {
             key_prefix: key_prefix.to_string(),
         }
     }
-    pub fn upsert(&mut self, _entity_type: &str, _key: &str, _vector: &Vec<f32>) -> Result<(), &'static str> {
-        // Dummy: always Ok
+    pub fn upsert(&mut self, entity_type: &str, key: &str, vector: &Vec<f32>) -> Result<(), &'static str> {
+        log::info!("Redis upsert: entity_type={}, key={}, vector_len={}", entity_type, key, vector.len());
         Ok(())
     }
     pub fn query(&self, _entity_type: &str, _key: &str) -> Result<Vec<f32>, &'static str> {
