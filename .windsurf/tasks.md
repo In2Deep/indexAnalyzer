@@ -113,7 +113,8 @@ Will proceed with strict adherence to TDD workflow, zero-warnings policy, and al
   - Added logging for all Redis vector operations. See src/vector_store.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
 ### Vector Indexing Workflow
-- [ ] TDD: Entity extraction for vectorization (reuse/adapt classic logic, verify no side-effects).
+- [x] TDD: Entity extraction for vectorization (reuse/adapt classic logic, verify no side-effects).
+  - Implemented `extract_entities` function to parse Python and Rust code and extract functions, classes, variables, and docstrings for vectorization. See src/extract_entities.rs, tests/vector_entity_extraction.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 - [ ] TDD: Embedding generation for extracted entities (call Embedder, receive vectors, error handling).
 - [ ] TDD: Batch processing and progress logging.
 
