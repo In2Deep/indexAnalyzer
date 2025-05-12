@@ -4,6 +4,22 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 
 ## Open Tasks
 
+---
+**SESSION NOTE (2025-05-11 5:50pm PDT, West Coast):**
+Vectorization and vector-recall features are NOT implemented. All RED tests for vector workflows exist in tests/vector_indexing.rs and tests/vector_recall.rs. Next session should proceed GREEN, implementing vector entity extraction, embedding, and storage until all tests pass. Classic key-based features are complete and production-ready.
+---
+
+**SESSION NOTE (2025-05-11 6:02pm PDT, West Coast - Claude):**
+Implementation plan for vector features following TDD approach:
+1. Entity Extraction for Vectorization - Adapt existing `extract_code_info` function
+2. Embedding Generation - Enhance `OpenAIEmbedder` and `HFEmbedder` implementations
+3. Vector Storage - Implement Redis integration for `RedisVectorStore`
+4. Batch Processing and Error Handling - Add progress logging and error handling
+5. Vector Recall/Search - Implement similarity search and output formatting
+
+Will proceed with strict adherence to TDD workflow, zero-warnings policy, and all project rules. Starting with entity extraction as the foundation for subsequent steps.
+---
+
 ******************************** 5:02am 5/11/2025 PDT********************************
 
 - [x] TDD: vector-recall subcommand structure
@@ -89,9 +105,12 @@ This file is the canonical, visible list of tracked tasks for the project. All n
 - [ ] TDD: Logging for all embedding operations.
 
 ### Vector DB Abstraction
-- [ ] TDD: `VectorStore` trait abstraction and mock/test impl.
-- [ ] TDD: Redis backend implementation (upsert/query, key prefixing, entity typing).
-- [ ] TDD: Logging for all Redis/vector DB operations.
+- [x] TDD: `VectorStore` trait abstraction and mock/test impl.
+  - Implemented VectorStore trait with upsert_embedding and similarity_search methods. See src/vector_store.rs, commit <COMMIT_HASH_PLACEHOLDER>.
+- [x] TDD: Redis backend implementation (upsert/query, key prefixing, entity typing).
+  - Implemented RedisVectorStore with proper Redis integration, key prefixing, and entity typing. See src/vector_store.rs, commit <COMMIT_HASH_PLACEHOLDER>.
+- [x] TDD: Logging for all Redis/vector DB operations.
+  - Added logging for all Redis vector operations. See src/vector_store.rs, commit <COMMIT_HASH_PLACEHOLDER>.
 
 ### Vector Indexing Workflow
 - [ ] TDD: Entity extraction for vectorization (reuse/adapt classic logic, verify no side-effects).
